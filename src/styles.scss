@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --primary-color: #5d739f;
+  --secondary-color: #f03a3999;
+  --text-color: #1b1b32;
+  --background-color: #f2f5f1;
+}
+
+html, body { height: 100%;
+
+}
+body { margin: 0; padding: 0; font-family: 'Poppins', "Helvetica Neue", sans-serif;
+
+  background-color: var(--background-color);
+}

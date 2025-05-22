@@ -1,0 +1,38 @@
+<div class="chat-window">
+  <div class="chat-display">
+    @for (message of chatLog; track message) {
+    <div
+      class="chat-window-message"
+      [ngClass]="
+        message.sender === Sender.User
+          ? 'chat-window-user-message'
+          : 'chat-window-bot-message'
+      "
+    >
+      {{ message.message }}
+    </div>
+    } @if (loading) {
+    <div class="loader"></div>
+    }
+  </div>
+
+  <div class="chat-input-row">
+    <div class="chat-input-box">
+      <input
+        class="chat-input"
+        type="text"
+        placeholder="Type here ..."
+        [value]="userInput"
+        (input)="onInputChange($event)"
+        (keyup.enter)="onSend()"
+      />
+      <button
+        class="chat-input-button"
+        (click)="onSend()"
+        [disabled]="loading || !userInput.trim()"
+      >
+        <mat-icon fontIcon="arrow_upward"></mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

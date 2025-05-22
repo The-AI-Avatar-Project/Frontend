@@ -1,0 +1,20 @@
+.courses-item{
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.courses-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+}
+
+.courses-title{
+  margin-left: 20px;
+}
+
+.courses-item:hover{
+  transform: scale(1.01);
+}
