@@ -1,0 +1,25 @@
+<div class="search-container" [class.loading]="loading()">
+  <mat-icon class="search-icon">search</mat-icon>
+
+  <input
+    type="text"
+    class="search-input"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    (input)="onInput($event)"
+    (keyup.enter)="onSearch()"
+  />
+
+  <div class="spinner-container" *ngIf="loading()">
+    <mat-spinner diameter="20"></mat-spinner>
+  </div>
+
+  <button
+    mat-icon-button
+    class="clear-button"
+    *ngIf="value() && !loading()"
+    (click)="valueChange.emit(''); onSearch()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+

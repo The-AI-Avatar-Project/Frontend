@@ -1,6 +1,5 @@
 <div class="courses-container">
   <h2>Available Courses</h2>
-  @for(course of courses(); track course){
-  <app-courses-item [image]="course.image" [name]="course.name" class="courses-item" />
-  }
+  <app-courses-search></app-courses-search>
+  <app-courses-pagination [courses]="courses()"></app-courses-pagination>
 </div>

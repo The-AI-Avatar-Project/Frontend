@@ -2,15 +2,16 @@ import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Course } from '../shared/interfaces/courses';
-import { CoursesItemComponent } from './ui/courses-item/courses-item.component';
+
 import { AuthService } from '../auth/auth.service';
+import { CoursesSearchComponent } from './ui/courses-search/courses-search.component';
+import { CoursesPaginationComponent } from './ui/courses-pagination/courses-pagination.component';
 
 @Component({
   selector: 'app-courses',
-  standalone: true,
-  imports: [CoursesItemComponent, MatIconModule, MatButtonModule],
+  imports: [CoursesSearchComponent, CoursesPaginationComponent],
   templateUrl: './courses.component.html',
-  styleUrl: './courses.component.scss'
+  styleUrl: './courses.component.scss',
 })
 export class CoursesComponent implements OnInit {
   private authService = inject(AuthService);
