@@ -5,6 +5,9 @@
     @for(link of navItems; track link){
     <a mat-button [routerLink]="[link.path]">{{ link.label }}</a>
     }
+    <button mat-button (click)="logout()">
+    <mat-icon>logout</mat-icon> Logout
+  </button>
   </nav>
   <button
     mat-icon-button
@@ -17,5 +20,8 @@
   <mat-menu #menu="matMenu">
     <button mat-menu-item routerLink="/link1">Link 1</button>
     <button mat-menu-item routerLink="/link2">Link 2</button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon> Logout
+    </button>
   </mat-menu>
 </mat-toolbar>
