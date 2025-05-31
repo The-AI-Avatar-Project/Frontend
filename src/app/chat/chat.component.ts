@@ -4,7 +4,6 @@ import { AvatarComponent } from './ui/avatar/avatar.component';
 import { ChatService } from './data-access/chat.service';
 import { VideoStreamService } from './data-access/stream.service';
 
-
 @Component({
   selector: 'app-chat',
   imports: [ChatWindowComponent, AvatarComponent],
@@ -16,10 +15,11 @@ export class ChatComponent {
 
   userInput = signal('');
 
-  // Video stream data
+  // Service data
   videoUrl = this.streamService.videoUrl;
   isStreaming = this.streamService.isStreaming;
   error = this.streamService.error;
+  chatLog = this.streamService.messages;
 
   onUserInputChange(value: string) {
     this.userInput.set(value);
@@ -33,8 +33,7 @@ export class ChatComponent {
     this.userInput.set('');
   }
 
-  stopStream() {
-    this.streamService.stopStream();
+  resetChat() {
+    this.streamService.resetChat();
   }
 }
-
