@@ -10,6 +10,5 @@ export interface ChatMessage {
 
 export interface ChatMessageResponse {
   responseText: string;
-  responseAudio: string;
   requestText: string;
 }

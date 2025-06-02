@@ -1,11 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
-import { provideZoneChangeDetection } from '@angular/core';
-
 import { AppComponent } from './app/app.component';
-import { routes } from './app/app.routes';
 import { AuthService } from './app/auth/auth.service';
+import { appConfig } from './app/app.config';
 
 async function main() {
   const authService = new AuthService();
@@ -13,10 +9,8 @@ async function main() {
 
   await bootstrapApplication(AppComponent, {
     providers: [
-      provideHttpClient(),
-      provideRouter(routes),
-      provideZoneChangeDetection({ eventCoalescing: true }),
-      { provide: AuthService, useValue: authService }
+      { provide: AuthService, useValue: authService },
+      ...appConfig.providers!
     ],
   });
 }

@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { ChatWindowComponent } from './ui/chat-window/chat-window.component';
 import { AvatarComponent } from './ui/avatar/avatar.component';
-import { ChatMessage, Sender } from '../shared/interfaces/chat';
 import { ChatService } from './data-access/chat.service';
 import { AuthService } from '../auth/auth.service';
+import { VideoStreamService } from './data-access/stream.service';
 
 @Component({
   selector: 'app-chat',
@@ -12,6 +12,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent {
+
   private chatService = inject(ChatService);
   private authService = inject(AuthService);
 
@@ -23,6 +24,14 @@ export class ChatComponent {
   chatLog = this.chatService.messages;
   loading = this.chatService.loading;
   error = this.chatService.error;
+  private streamService = inject(VideoStreamService);
+
+
+
+
+  videoUrl = this.streamService.videoUrl;
+  isStreaming = this.streamService.isStreaming;
+
 
   ngOnInit(): void {
     this.authService.getFirstName().then(name => {
@@ -38,11 +47,11 @@ export class ChatComponent {
     const trimmed = this.userInput().trim();
     if (!trimmed) return;
 
-    this.chatService.sendMessage(trimmed);
+    this.streamService.startStream(trimmed);
     this.userInput.set('');
   }
 
-  resetChat(){
-    this.chatService.resetChat();
+  resetChat() {
+    this.streamService.resetChat();
   }
 }
