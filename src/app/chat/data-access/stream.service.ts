@@ -1,7 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { ChatMessageResponse } from '../../shared/interfaces/chat';
+import { ChatMessageResponse, Sender } from '../../shared/interfaces/chat';
 
-export type Sender = 'User' | 'Bot';
 
 export interface ChatMessage {
   sender: Sender;
@@ -11,7 +10,7 @@ export interface ChatMessage {
 @Injectable({ providedIn: 'root' })
 export class VideoStreamService {
   private _messages = signal<ChatMessage[]>([
-    { sender: 'Bot', message: 'Hallo! Wie kann ich dir helfen?' },
+    { sender: Sender.Bot, message: 'Hallo! Wie kann ich dir helfen?' },
   ]);
   private _isStreaming = signal(false);
   private _error = signal<string | null>(null);
@@ -43,7 +42,7 @@ export class VideoStreamService {
   }
   this._messages.update((msgs) => [
     ...msgs,
-    { sender: 'Bot', message: responseText },
+    { sender: Sender.Bot, message: responseText },
   ]);
 });
 
@@ -59,7 +58,7 @@ export class VideoStreamService {
     // User-Nachricht ins Log
     this._messages.update((msgs) => [
       ...msgs,
-      { sender: 'User', message: userMessage },
+      { sender: Sender.User, message: userMessage },
     ]);
 
     // Sende User-Message an den WebSocket (falls gewünscht)
@@ -125,7 +124,7 @@ export class VideoStreamService {
 
   resetChat() {
     this._messages.set([
-      { sender: 'Bot', message: 'Hallo! Wie kann ich dir helfen?' },
+      { sender: Sender.Bot, message: 'Hallo! Wie kann ich dir helfen?' },
     ]);
     this._isStreaming.set(false);
     this._error.set(null);
