@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { ChatMessageResponse, Sender } from '../../shared/interfaces/chat';
-
+import { API_URL } from '../../shared/constants/constants';
 
 export interface ChatMessage {
   sender: Sender;
@@ -28,26 +28,43 @@ export class VideoStreamService {
   }
 
   private initWebSocket() {
-    this.socket = new WebSocket('ws://localhost:8080/ws');
-   this.socket.addEventListener('message', (event) => {
-  let responseText = event.data;
-  try {
-    // Versuche, das JSON zu parsen
-    const obj = JSON.parse(event.data) as ChatMessageResponse;
-    if (obj && obj.responseText) {
-      responseText = obj.responseText;
+    if (this.socket) {
+      this.socket.close();
     }
-  } catch {
-    // Falls kein JSON, nimm den Rohtext
-  }
-  this._messages.update((msgs) => [
-    ...msgs,
-    { sender: Sender.Bot, message: responseText },
-  ]);
-});
 
-    this.socket.addEventListener('error', () => {
-      this._error.set('WebSocket-Fehler');
+    this.socket = new WebSocket('ws://localhost:8080/ws');
+
+    this.socket.addEventListener('open', () => {
+      console.log('WebSocket connection established');
+      this._error.set(null);
+    });
+
+    this.socket.addEventListener('message', (event) => {
+      console.log('WebSocket message received:', event.data);
+      let responseText = event.data;
+      try {
+        const obj = JSON.parse(event.data) as ChatMessageResponse;
+        if (obj && obj.responseText) {
+          responseText = obj.responseText;
+        }
+      } catch (e) {
+        console.warn('Could not parse WebSocket message as JSON:', e);
+      }
+      this._messages.update((msgs) => [
+        ...msgs,
+        { sender: Sender.Bot, message: responseText },
+      ]);
+    });
+
+    this.socket.addEventListener('error', (event) => {
+      console.error('WebSocket error:', event);
+      this._error.set('Error with WebSocket connection');
+    });
+
+    this.socket.addEventListener('close', (event) => {
+      console.warn(`WebSocket closed: ${event.code} ${event.reason}`);
+      // Reconnect after a short delay
+      setTimeout(() => this.initWebSocket(), 3000);
     });
   }
 
@@ -55,26 +72,46 @@ export class VideoStreamService {
     this._isStreaming.set(true);
     this._error.set(null);
 
-    // User-Nachricht ins Log
+    // pushing user message to log
     this._messages.update((msgs) => [
       ...msgs,
       { sender: Sender.User, message: userMessage },
     ]);
 
-    // Sende User-Message an den WebSocket (falls gewünscht)
+    // Check socket state and reconnect if needed
+    if (
+      !this.socket ||
+      this.socket.readyState === WebSocket.CLOSED ||
+      this.socket.readyState === WebSocket.CLOSING
+    ) {
+      this.initWebSocket();
+      // Wait a bit for connection
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(userMessage);
+      try {
+        this.socket.send(userMessage);
+      } catch (e) {
+        console.error('Error sending message via WebSocket:', e);
+        this._error.set('Failed to send message');
+      }
+    } else {
+      this._error.set(
+        `WebSocket not ready (state: ${this.socket?.readyState})`
+      );
+      console.warn('WebSocket not ready, message not sent');
     }
 
     try {
-      const apiUrl = 'http://localhost:8080/ai/text/1';
+      const apiUrl = `${API_URL}/ai/text/1`;
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: userMessage,
       });
 
-      if (!response.body) throw new Error('Kein Videostream erhalten');
+      if (!response.body) throw new Error('No video stream received');
 
       const mediaSource = new MediaSource();
       const videoUrl = URL.createObjectURL(mediaSource);
@@ -99,25 +136,21 @@ export class VideoStreamService {
               if (!sourceBuffer.updating) {
                 readChunk();
               } else {
-                sourceBuffer.addEventListener(
-                  'updateend',
-                  () => readChunk(),
-                  { once: true }
-                );
+                sourceBuffer.addEventListener('updateend', () => readChunk(), {
+                  once: true,
+                });
               }
             });
           };
 
           readChunk();
         } catch (err: any) {
-          this._error.set('Fehler beim Video-Stream');
+          this._error.set('Error with video stream');
           this._isStreaming.set(false);
         }
       });
     } catch (err: any) {
-      this._error.set(
-        err?.message || 'Unbekannter Fehler beim Streamen'
-      );
+      this._error.set(err?.message || 'Error with video stream');
       this._isStreaming.set(false);
     }
   }
