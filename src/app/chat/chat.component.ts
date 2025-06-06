@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ChatWindowComponent } from './ui/chat-window/chat-window.component';
 import { AvatarComponent } from './ui/avatar/avatar.component';
-import { ChatService } from './data-access/chat.service';
 import { AuthService } from '../auth/auth.service';
 import { VideoStreamService } from './data-access/stream.service';
 
@@ -12,32 +11,18 @@ import { VideoStreamService } from './data-access/stream.service';
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent {
-
-  private chatService = inject(ChatService);
-  private authService = inject(AuthService);
-
-  dummyVideo = signal<string>('dummyExample.mp4');
-  userInput = signal('');
-
-  // load service data
-  firstName = signal<string | undefined>(undefined);
-  chatLog = this.chatService.messages;
-  loading = this.chatService.loading;
-  error = this.chatService.error;
+  private authService = inject(AuthService)
   private streamService = inject(VideoStreamService);
 
+  userInput = signal('');
 
-
-
+  // Service data
   videoUrl = this.streamService.videoUrl;
   isStreaming = this.streamService.isStreaming;
+  error = this.streamService.error;
+  chatLog = this.streamService.messages;
 
-
-  ngOnInit(): void {
-    this.authService.getFirstName().then(name => {
-      this.firstName.set(name);
-    });
-  }
+  firstName = signal<string | undefined>(undefined);
 
   onUserInputChange(value: string) {
     this.userInput.set(value);
@@ -49,6 +34,12 @@ export class ChatComponent {
 
     this.streamService.startStream(trimmed);
     this.userInput.set('');
+  }
+
+  ngOnInit(): void {
+    this.authService.getFirstName().then(name => {
+      this.firstName.set(name);
+    });
   }
 
   resetChat() {

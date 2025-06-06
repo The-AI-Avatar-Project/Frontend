@@ -1,8 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { ChatMessageResponse, Sender } from '../../shared/interfaces/chat';
-import { HttpClient } from '@angular/common/http';
 import { API_URL } from '../../shared/constants/constants';
-import { AuthService } from '../../auth/auth.service'
+import { AuthService } from '../../auth/auth.service';
 
 export interface ChatMessage {
   sender: Sender;
@@ -11,14 +10,14 @@ export interface ChatMessage {
 
 @Injectable({ providedIn: 'root' })
 export class VideoStreamService {
-  private authService = inject(AuthService);
-  private http = inject(HttpClient);
   private _messages = signal<ChatMessage[]>([
     { sender: Sender.Bot, message: 'Hallo! Wie kann ich dir helfen?' },
   ]);
   private _isStreaming = signal(false);
   private _error = signal<string | null>(null);
   private _videoUrl = signal<string | null>(null);
+
+  private authservice =  inject(AuthService)
 
   messages = computed(() => this._messages());
   isStreaming = computed(() => this._isStreaming());
@@ -109,10 +108,10 @@ export class VideoStreamService {
 
     try {
       const apiUrl = `${API_URL}/ai/text/1`;
-      const token = this.authService.getToken()
+      const bearertoken = this.authservice.getToken()
       const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain', 'Authorization': `Bearer ${token}`, },
+        headers: { 'Content-Type': 'text/plain', 'Authorization': `Bearer ${bearertoken}`, },
         body: userMessage,
       });
 
