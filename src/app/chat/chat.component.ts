@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { ChatWindowComponent } from './ui/chat-window/chat-window.component';
 import { AvatarComponent } from './ui/avatar/avatar.component';
-import { ChatMessage, Sender } from '../shared/interfaces/chat';
 import { ChatService } from './data-access/chat.service';
+import { VideoStreamService } from './data-access/stream.service';
 
 @Component({
   selector: 'app-chat',
@@ -11,14 +11,15 @@ import { ChatService } from './data-access/chat.service';
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent {
-  private chatService = inject(ChatService);
-  dummyVideo = signal<string>('dummyExample.mp4');
+  private streamService = inject(VideoStreamService);
+
   userInput = signal('');
 
-  // load service data
-  chatLog = this.chatService.messages;
-  loading = this.chatService.loading;
-  error = this.chatService.error;
+  // Service data
+  videoUrl = this.streamService.videoUrl;
+  isStreaming = this.streamService.isStreaming;
+  error = this.streamService.error;
+  chatLog = this.streamService.messages;
 
   onUserInputChange(value: string) {
     this.userInput.set(value);
@@ -28,11 +29,11 @@ export class ChatComponent {
     const trimmed = this.userInput().trim();
     if (!trimmed) return;
 
-    this.chatService.sendMessage(trimmed);
+    this.streamService.startStream(trimmed);
     this.userInput.set('');
   }
 
-  resetChat(){
-    this.chatService.resetChat();
+  resetChat() {
+    this.streamService.resetChat();
   }
 }

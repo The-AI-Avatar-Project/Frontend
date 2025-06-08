@@ -1,0 +1,23 @@
+<div class="courses-pagination-container">
+  <div class="courses-pages-item-grid">
+  @for(course of displayedCourses(); track course){
+  <app-courses-item
+    [image]="course.image"
+    [name]="course.name"
+    class="courses-item"
+  />
+  }
+  </div>
+ @for(page of Array(totalPages()); track $index){
+  <button
+    [ngClass]="
+      currentPage() == $index + 1
+        ? 'pagination-button-current'
+        : 'pagination-button'
+    "
+    (click)="currentPage.set($index + 1)"
+  >
+    {{ $index + 1 }}
+  </button>
+  }
+</div>

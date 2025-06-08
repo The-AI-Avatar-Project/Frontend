@@ -1,0 +1,20 @@
+.courses-pages-item-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+
+.pagination-button, .pagination-button-current{
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-right: 5px;
+  margin-top: 10px;
+}
+.pagination-button-current{
+  background-color: var(--secondary-color);
+}
