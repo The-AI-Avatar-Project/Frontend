@@ -1,8 +1,8 @@
 .courses-pages-item-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-self: flex-start;
+  align-self: flex-start;
 }
 
 

@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ChatWindowComponent } from './ui/chat-window/chat-window.component';
 import { AvatarComponent } from './ui/avatar/avatar.component';
-import { ChatService } from './data-access/chat.service';
 import { VideoStreamService } from './data-access/stream.service';
 
 @Component({

@@ -1,5 +1,5 @@
-import { Component, computed, input, signal } from '@angular/core';
-import { Course } from '../../../shared/interfaces/courses';
+import { Component, computed, input, output, signal } from '@angular/core';
+import { Course, Professor } from '../../../shared/interfaces/courses';
 import { CoursesItemComponent } from '../courses-item/courses-item.component';
 import { NgClass } from '@angular/common';
 
@@ -12,19 +12,19 @@ import { NgClass } from '@angular/common';
 export class CoursesPaginationComponent {
   Array = Array;
 
-  courses = input.required<Course[]>();
+  professors = input.required<Professor[]>();
 
-  ELEMENTS_PER_PAGE = signal(5);
+  ELEMENTS_PER_PAGE = signal(3);
 
   currentPage = signal(1);
 
   totalPages = computed(() =>
-    Math.ceil(this.courses().length / this.ELEMENTS_PER_PAGE())
+    Math.ceil(this.professors().length / this.ELEMENTS_PER_PAGE())
   );
 
-  displayedCourses = computed(() => {
+  displayedProfessors = computed(() => {
     const startIndex = (this.currentPage() - 1) * this.ELEMENTS_PER_PAGE();
     const endIndex = startIndex + this.ELEMENTS_PER_PAGE();
-    return this.courses().slice(startIndex, endIndex);
+    return this.professors().slice(startIndex, endIndex);
   });
 }
