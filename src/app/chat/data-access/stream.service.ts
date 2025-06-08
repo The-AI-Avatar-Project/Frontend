@@ -32,7 +32,7 @@ export class VideoStreamService {
       this.socket.close();
     }
 
-    this.socket = new WebSocket('ws://localhost:8080/ws');
+    this.socket = new WebSocket('ws://192.168.2.150:8080/ws');
 
     this.socket.addEventListener('open', () => {
       console.log('WebSocket connection established');
