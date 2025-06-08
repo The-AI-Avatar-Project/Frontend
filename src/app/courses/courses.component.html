@@ -1,5 +1,12 @@
 <div class="courses-container">
   <h2>Available Courses</h2>
-  <app-courses-search></app-courses-search>
-  <app-courses-pagination [courses]="courses()"></app-courses-pagination>
+  <app-courses-search
+    [searchValue]="searchValue()"
+    (searchValueChange)="onSearchValueChange($event)"
+    [yearList]="yearList"
+    [selectedYear]="selectedYear()"
+  ></app-courses-search>
+  <app-courses-pagination
+    [professors]="filteredProfessors()"
+  ></app-courses-pagination>
 </div>

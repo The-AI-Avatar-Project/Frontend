@@ -1,25 +1,38 @@
-<div class="search-container" [class.loading]="loading()">
-  <mat-icon class="search-icon">search</mat-icon>
+<div class="search-container">
+  <div class="search-bar">
+    <mat-icon class="search-icon">search</mat-icon>
 
-  <input
-    type="text"
-    class="search-input"
-    [placeholder]="placeholder()"
-    [value]="value()"
-    (input)="onInput($event)"
-    (keyup.enter)="onSearch()"
-  />
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search..."
+      [value]="searchValue()"
+      (input)="onSearchValueChange($event)"
+    />
 
-  <div class="spinner-container" *ngIf="loading()">
-    <mat-spinner diameter="20"></mat-spinner>
+    <button
+      mat-icon-button
+      class="clear-button"
+      *ngIf="searchValue()"
+      (click)="searchValueChange.emit('')"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 
-  <button
-    mat-icon-button
-    class="clear-button"
-    *ngIf="value() && !loading()"
-    (click)="valueChange.emit(''); onSearch()">
-    <mat-icon>close</mat-icon>
-  </button>
+  <ul class="year-filter">
+    @for(year of yearList(); track year){
+    <li>
+      <button
+        [ngClass]="
+          year === selectedYear()
+            ? 'year-button year-button-selected'
+            : 'year-button'
+        "
+      >
+        {{ year }}
+      </button>
+    </li>
+    }
+  </ul>
 </div>
-

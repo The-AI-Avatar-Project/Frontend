@@ -1,5 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { Professor } from '../../../shared/interfaces/courses';
 
 @Component({
   selector: 'app-courses-item',
@@ -8,6 +9,5 @@ import { RouterModule } from '@angular/router';
   styleUrl: './courses-item.component.scss',
 })
 export class CoursesItemComponent {
-  image = input.required<string>();
-  name = input.required<string>();
+  professor = input.required<Professor>()
 }

@@ -16,19 +16,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './courses-search.component.scss',
 })
 export class CoursesSearchComponent {
-  value = input('');
-  placeholder = input('Search...');
-  loading = input(true);
+  searchValue = input('');
+  searchValueChange = output<string>();
 
-  valueChange = output<string>();
-  search = output<void>();
+  yearList = input<string[]>(['2025']);
+  selectedYear = input<string>(this.yearList()[0]);
 
-  onInput(event: Event): void {
+  onSearchValueChange(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
-    this.valueChange.emit(value);
-  }
-
-  onSearch(): void {
-    this.search.emit();
+    this.searchValueChange.emit(value);
   }
 }

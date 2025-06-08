@@ -1,4 +1,16 @@
-<div class="courses-item" [routerLink]="['/chat']">
-  <img class="courses-image" [src]="image()" alt="professor" />
-  <p class="courses-title">{{ name() }}</p>
+<div class="courses-item">
+  <div class="professor">
+    <img class="professor-image" [src]="professor().image" alt="professor" />
+    <p class="professor-name">{{ professor().name }}</p>
+  </div>
+  <ul class="courses-list">
+    @for(course of professor().courses; track course){
+    <li class="courses-course" [routerLink]="['/chat']">
+      <img class="course-image" [src]="course.image" [alt]="course.name" />
+      <p class="course-name">
+        {{ course.name }}
+      </p>
+    </li>
+    }
+  </ul>
 </div>
