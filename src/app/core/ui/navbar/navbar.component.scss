@@ -1,9 +1,13 @@
 .navbar {
+  padding: 0;
   background-color: var(--background-color);
+  overflow: visible;
+  position: relative;
+  height: 64px;
   .logo {
-    font-weight: bold;
-    font-size: 1.5rem;
-    letter-spacing: 1px;
+    height: 105px;
+    margin-top: 15px;
+    margin-left: -10px;
   }
 
   .spacer {
@@ -12,8 +16,8 @@
 
   .nav-links {
     display: flex;
-    gap: 1rem;
-
+    gap: 0.5rem;
+    margin-right: 2rem;
     a {
       font-size: 17px;
       font-family: "Poppins";
@@ -23,6 +27,7 @@
 
   .mobile-menu {
     display: none;
+    margin-right: 1rem;
   }
 }
 
@@ -33,6 +38,11 @@
     }
     .mobile-menu {
       display: inline-flex;
+    }
+    .logo{
+      height: 80px;
+      margin-top: 15px;
+      margin-left: -10px;
     }
   }
 }
