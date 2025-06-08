@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="navbar">
-  <span class="logo">AiVatar</span>
+  <img class="logo" src="Logo.png" />
   <span class="spacer"></span>
   <nav class="nav-links">
     @for(link of navItems; track link){
@@ -15,7 +15,8 @@
     <mat-icon>menu</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/link1">Link 1</button>
-    <button mat-menu-item routerLink="/link2">Link 2</button>
+    @for(link of navItems; track link){
+    <button mat-menu-item [routerLink]="[link.path]">{{ link.label }}</button>
+    }
   </mat-menu>
 </mat-toolbar>
