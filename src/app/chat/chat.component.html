@@ -1,10 +1,14 @@
-
 <div class="chat-container">
+  <div class="back-navigation" [routerLink]="['/courses']">
+    <mat-icon class="back-icon">arrow_back</mat-icon>
+    <p class="back-label">Return</p>
+  </div>
   <h2 class="chat-greeting">Hello, Thomas!</h2>
   <div class="chat-main">
     <app-avatar
       class="chat-avatar"
-      [videoUrl]="videoUrl() || 'dummyExample.mp4'"
+      [videoUrl]="videoUrl()"
+      [posterImage]="posterImage()"
     />
     <app-chat-window
       class="chat-window"
@@ -17,7 +21,6 @@
   </div>
 
   @if (error()) {
-    <div class="error">{{ error() }}</div>
+  <div class="error">{{ error() }}</div>
   }
 </div>
-
