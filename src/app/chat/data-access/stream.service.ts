@@ -10,7 +10,7 @@ export interface ChatMessage {
 @Injectable({ providedIn: 'root' })
 export class VideoStreamService {
   private _messages = signal<ChatMessage[]>([
-    { sender: Sender.Bot, message: 'Hallo! Wie kann ich dir helfen?' },
+    { sender: Sender.Bot, message: 'Hey! How can I assist you today?' },
   ]);
   private _isStreaming = signal(false);
   private _error = signal<string | null>(null);

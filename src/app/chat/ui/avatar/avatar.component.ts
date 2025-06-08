@@ -4,8 +4,9 @@ import { Component, input } from '@angular/core';
   selector: 'app-avatar',
   imports: [],
   templateUrl: './avatar.component.html',
-  styleUrl: './avatar.component.scss'
+  styleUrl: './avatar.component.scss',
 })
 export class AvatarComponent {
-  readonly videoUrl = input<string>();
+  readonly videoUrl = input<string | null>();
+  readonly posterImage = input<string>();
 }
