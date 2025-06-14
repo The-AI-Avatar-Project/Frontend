@@ -4,15 +4,26 @@ import { AvatarComponent } from './ui/avatar/avatar.component';
 import { VideoStreamService } from './data-access/stream.service';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-chat',
-  imports: [ChatWindowComponent, AvatarComponent, MatIconModule, RouterModule],
+  imports: [
+    ChatWindowComponent,
+    AvatarComponent,
+    MatIconModule,
+    RouterModule,
+    TitleCasePipe,
+  ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent {
+  private authService = inject(AuthService);
   private streamService = inject(VideoStreamService);
+
+  firstName = signal<string | undefined>('');
 
   userInput = signal('');
 
@@ -24,6 +35,11 @@ export class ChatComponent {
 
   posterImage = signal<string>('dummyprof1.png');
 
+  ngOnInit(): void {
+    this.authService.getFirstName().then((name) => {
+      this.firstName.set(name);
+    });
+  }
   onUserInputChange(value: string) {
     this.userInput.set(value);
   }
