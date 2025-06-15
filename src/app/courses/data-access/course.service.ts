@@ -1,9 +1,13 @@
-import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Course, CoursesReponse } from '../../shared/interfaces/courses';
-import { API_URL } from '../../shared/constants/constants';
-import { catchError, EMPTY, map } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  Course,
+  JwtPayload,
+  Professor,
+  Semester,
+  SemesterType,
+} from '../../shared/interfaces/courses';
+import { AuthService } from '../../auth/auth.service';
+import { jwtDecode } from 'jwt-decode';
 
 export interface CourseState {
   availableCourses: Course[];
@@ -12,8 +16,7 @@ export interface CourseState {
   providedIn: 'root',
 })
 export class CourseService {
-  private http = inject(HttpClient);
-
+  private authService = inject(AuthService);
 
   private state = signal<CourseState>({
     availableCourses: [],
@@ -21,19 +24,50 @@ export class CourseService {
 
   availableCourses = computed(() => this.state().availableCourses);
 
-  private availableCoursesLoaded$ = this.fetchAvailableCourses();
-
   constructor() {
-    this.availableCoursesLoaded$.pipe(takeUntilDestroyed()).subscribe((courses) => this.state.update((state) => ({
-      ...state,
-      availableCourses: [...state.availableCourses, ...courses]
-    })))
+    const jwtToken = this.authService.getToken();
+    const payload = this.decodeToken(jwtToken || '');
+    const semesters: Semester[] = this.parseGroups(payload?.groups || ['']);
+    console.log(semesters)
   }
 
-  private fetchAvailableCourses() {
-    return this.http.get<CoursesReponse>(`${API_URL}/courses`).pipe(
-      catchError((err) => EMPTY),
-      map((response) => response.data)
-    );
+  decodeToken(token: string): JwtPayload | null {
+    try {
+      return jwtDecode<JwtPayload>(token);
+    } catch (error) {
+      console.error('Invalid JWT:', error);
+      return null;
+    }
+  }
+
+  parseGroups(groups: string[]): Semester[] {
+    const semesterMap = new Map<string, Semester>();
+
+    for (const group of groups) {
+      const [, year, semesterType, professorName, courseName] =
+        group.split('/');
+
+      const semesterKey = `${year}-${semesterType}`;
+
+      if (!semesterMap.has(semesterKey)) {
+        semesterMap.set(semesterKey, {
+          year: Number(year),
+          semesterType: semesterType as SemesterType,
+          professors: [],
+        });
+      }
+
+      const semester = semesterMap.get(semesterKey)!;
+
+      let professor = semester.professors.find((p) => p.name === professorName);
+      if (!professor) {
+        professor = { name: professorName, courses: [] };
+        semester.professors.push(professor);
+      }
+
+      professor.courses.push({ name: courseName });
+    }
+
+    return Array.from(semesterMap.values());
   }
 }
