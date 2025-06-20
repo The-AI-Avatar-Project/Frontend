@@ -13,23 +13,23 @@ import { CourseService } from './data-access/course.service';
 })
 export class CoursesComponent {
   searchValue = signal('');
-  professors = signal<Professor[]>(dummyCourseData);
   courseService = inject(CourseService);
 
-  yearList: string[] = Array.from({ length: 4 }, (_, i) =>
-    String(new Date().getFullYear() - i)
-  );
-
-  selectedYear = signal<string>(this.yearList[0]);
+  yearList = this.courseService.yearList;
+  selectedYear = computed(() => this.yearList().at(0));
 
   filteredProfessors = computed(() => {
+    console.log(this.courseService.semesters());
+    let profs = this.courseService
+      .semesters()
+      .filter((semester) => semester.year === this.selectedYear())
+      .flatMap((semester) => semester.professors);
+    console.log(profs);
     const search = this.searchValue().trim().toLowerCase();
     if (!search) {
-      return this.professors();
+      return profs;
     }
-    return this.professors().filter((prof) =>
-      prof.name.toLowerCase().includes(search)
-    );
+    return profs.filter((prof) => prof.name.toLowerCase().includes(search));
   });
 
   onSearchValueChange(newValue: string) {

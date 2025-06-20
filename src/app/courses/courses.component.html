@@ -3,8 +3,8 @@
   <app-courses-search
     [searchValue]="searchValue()"
     (searchValueChange)="onSearchValueChange($event)"
-    [yearList]="yearList"
-    [selectedYear]="selectedYear()"
+    [yearList]="yearList()"
+    [selectedYear]="selectedYear() || 0"
   ></app-courses-search>
   <app-courses-pagination
     [professors]="filteredProfessors()"

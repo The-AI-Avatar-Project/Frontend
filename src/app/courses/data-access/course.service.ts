@@ -1,51 +1,62 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import {
-  Course,
-  JwtPayload,
-  Professor,
-  Semester,
-  SemesterType,
-} from '../../shared/interfaces/courses';
-import { AuthService } from '../../auth/auth.service';
-import { jwtDecode } from 'jwt-decode';
+import { Semester, SemesterType } from '../../shared/interfaces/courses';
+import { Injectable, signal, inject, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-export interface CourseState {
-  availableCourses: Course[];
+interface ApiCourseResponse {
+  path: string;
+  name: string;
+  attributes: {
+    owner: string[];
+    icon: string[];
+  };
 }
+
 @Injectable({
   providedIn: 'root',
 })
 export class CourseService {
-  private authService = inject(AuthService);
+  private http = inject(HttpClient);
 
-  private state = signal<CourseState>({
-    availableCourses: [],
-  });
-
-  availableCourses = computed(() => this.state().availableCourses);
+  semesters = signal<Semester[]>([]);
+  loading = signal<boolean>(true);
+  error = signal<string | null>(null);
+yearList = computed(() =>
+  Array.from(
+    new Set(this.semesters().map(s => s.year))
+  ).sort((a, b) => b - a)
+);
 
   constructor() {
-    const jwtToken = this.authService.getToken();
-    const payload = this.decodeToken(jwtToken || '');
-    const semesters: Semester[] = this.parseGroups(payload?.groups || ['']);
-    console.log(semesters)
+    this.loadCourses();
   }
 
-  decodeToken(token: string): JwtPayload | null {
-    try {
-      return jwtDecode<JwtPayload>(token);
-    } catch (error) {
-      console.error('Invalid JWT:', error);
-      return null;
-    }
+  private loadCourses() {
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.http
+      .get<ApiCourseResponse[]>('http://localhost:8080/rooms')
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: (response) => {
+          const parsedSemesters = this.parseApiResponse(response);
+          this.semesters.set(parsedSemesters);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set('Failed to load courses');
+          this.loading.set(false);
+          console.error('Error loading courses:', err);
+        },
+      });
   }
 
-  parseGroups(groups: string[]): Semester[] {
+  private parseApiResponse(courses: ApiCourseResponse[]): Semester[] {
     const semesterMap = new Map<string, Semester>();
 
-    for (const group of groups) {
-      const [, year, semesterType, professorName, courseName] =
-        group.split('/');
+    for (const course of courses) {
+      const [, year, semesterType, professorName] = course.path.split('/');
 
       const semesterKey = `${year}-${semesterType}`;
 
@@ -65,7 +76,10 @@ export class CourseService {
         semester.professors.push(professor);
       }
 
-      professor.courses.push({ name: courseName });
+      professor.courses.push({
+        name: course.name,
+        image: course.attributes.icon?.[0],
+      });
     }
 
     return Array.from(semesterMap.values());

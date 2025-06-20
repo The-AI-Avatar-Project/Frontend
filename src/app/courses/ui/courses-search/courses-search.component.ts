@@ -19,8 +19,8 @@ export class CoursesSearchComponent {
   searchValue = input('');
   searchValueChange = output<string>();
 
-  yearList = input<string[]>(['2025']);
-  selectedYear = input<string>(this.yearList()[0]);
+  yearList = input<number[]>([]);
+  selectedYear = input<number>(this.yearList()[0]);
 
   onSearchValueChange(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
