@@ -5,7 +5,7 @@
     <input
       type="text"
       class="search-input"
-      placeholder="Search..."
+      placeholder="{{'courses.search' | transloco}}"
       [value]="searchValue()"
       (input)="onSearchValueChange($event)"
     />
@@ -19,6 +19,4 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-
-
 </div>

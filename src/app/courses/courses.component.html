@@ -1,5 +1,5 @@
 <div class="courses-container">
-  <h2>Available Courses</h2>
+  <h2>{{ "courses.title" | transloco }}</h2>
   <app-courses-search
     [searchValue]="searchValue()"
     (searchValueChange)="onSearchValueChange($event)"
