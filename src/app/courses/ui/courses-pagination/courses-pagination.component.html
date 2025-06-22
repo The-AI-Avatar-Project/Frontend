@@ -1,12 +1,12 @@
 <div class="courses-pagination-container">
   <div class="courses-pages-item-grid">
-  @for(professor of displayedProfessors(); track professor){
-  <app-courses-item
-    [professor]="professor"
-  />
-  }
+    @for(professor of displayedProfessors(); track professor.courses){
+    <app-courses-item [professor]="professor" />
+    } @if(displayedProfessors().length === 0){
+    <p class="courses-not-found">No results found for given parameters.</p>
+    }
   </div>
- @for(page of Array(totalPages()); track $index){
+  @for(page of Array(totalPages()); track $index){
   <button
     [ngClass]="
       currentPage() == $index + 1

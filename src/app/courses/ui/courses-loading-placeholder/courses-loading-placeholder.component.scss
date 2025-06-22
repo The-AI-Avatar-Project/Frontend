@@ -1,0 +1,128 @@
+.courses-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.professor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.professor-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  display: block;
+}
+
+.professor-name {
+  margin: 5px 0 0 0;
+  text-align: center;
+}
+
+.courses-list {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-auto-flow: column;
+  height: 150px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  column-gap: 10px;
+}
+
+.courses-course {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.courses-course:hover p {
+  text-decoration: underline;
+}
+
+.courses-course:hover {
+  transform: scale(1.02);
+}
+
+.course-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 15px;
+  margin-right: 5px;
+}
+
+.course-name {
+  margin: 0;
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #e0e0e0 25%,
+    #f0f0f0 50%,
+    #e0e0e0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-semester {
+  width: 90px;
+  height: 35px;
+  border-radius: 15px;
+  margin-right: 5px;
+}
+
+.semester-filter{
+  display: flex;
+  margin: 0;
+  margin-left: 1px;
+  margin-bottom: 18px;
+  padding: 0;
+  list-style-type: none;
+  width: 530px;
+  height: 50px;
+  border-radius: 15px;
+  overflow-x: auto;
+}
+
+
+.professor-image.skeleton {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+}
+
+.professor-name.skeleton-text {
+  width: 100px;
+  height: 20px;
+  margin: 10px 0 0 0;
+  border-radius: 4px;
+}
+
+.course-image.skeleton {
+  width: 40px;
+  height: 40px;
+  border-radius: 15px;
+  margin-right: 5px;
+}
+
+.course-name.skeleton-text {
+  width: 80px;
+  height: 16px;
+  border-radius: 4px;
+}

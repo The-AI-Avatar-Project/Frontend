@@ -3,10 +3,18 @@
   <app-courses-search
     [searchValue]="searchValue()"
     (searchValueChange)="onSearchValueChange($event)"
-    [yearList]="yearList()"
-    [selectedYear]="selectedYear() || 0"
   ></app-courses-search>
+  @if(!coursesLoading()){
+  <app-courses-semester-filter
+    [selectedSemester]="selectedSemster() || ''"
+    [semesterList]="semesterList()"
+    (onSemesterChange)="onSemesterChange($event)"
+  >
+  </app-courses-semester-filter>
   <app-courses-pagination
     [professors]="filteredProfessors()"
   ></app-courses-pagination>
+  }@else{
+  <app-courses-loading-placeholder> </app-courses-loading-placeholder>
+  }
 </div>

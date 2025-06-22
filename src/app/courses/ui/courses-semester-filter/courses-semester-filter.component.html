@@ -1,0 +1,16 @@
+  <ul class="semester-filter">
+    @for(semester of semesterList(); track semester){
+    <li>
+      <button
+        (click)="onSemesterClick(semester)"
+        [ngClass]="
+          semester === selectedSemester()
+            ? 'semester-button semester-button-selected'
+            : 'semester-button'
+        "
+      >
+        {{ semester }}
+      </button>
+    </li>
+    }
+  </ul>

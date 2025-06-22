@@ -5,10 +5,15 @@
   align-self: flex-start;
 }
 
+.courses-not-found{
+  text-align: center;
+  color: var(--text-color)
+}
 
 .pagination-button, .pagination-button-current{
   width: 35px;
   height: 35px;
+  font-size: 16px;
   border: none;
   border-radius: 15px;
   cursor: pointer;

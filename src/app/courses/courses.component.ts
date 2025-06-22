@@ -1,35 +1,61 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { Course, Professor } from '../shared/interfaces/courses';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CoursesSearchComponent } from './ui/courses-search/courses-search.component';
 import { CoursesPaginationComponent } from './ui/courses-pagination/courses-pagination.component';
-import { dummyCourseData } from './data-access/dummyCourseData';
 import { CourseService } from './data-access/course.service';
+import { CoursesLoadingPlaceholderComponent } from './ui/courses-loading-placeholder/courses-loading-placeholder.component';
+import { CoursesSemesterFilterComponent } from './ui/courses-semester-filter/courses-semester-filter.component';
 
 @Component({
   selector: 'app-courses',
-  imports: [CoursesSearchComponent, CoursesPaginationComponent],
+  imports: [
+    CoursesSearchComponent,
+    CoursesPaginationComponent,
+    CoursesLoadingPlaceholderComponent,
+    CoursesSemesterFilterComponent
+  ],
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.scss',
 })
 export class CoursesComponent {
   searchValue = signal('');
   courseService = inject(CourseService);
+  coursesLoading = this.courseService.loading;
 
-  yearList = this.courseService.yearList;
-  selectedYear = computed(() => this.yearList().at(0));
+  semesterList = this.courseService.semesterList;
+  selectedSemster = signal<string | undefined>('');
+
+  constructor() {
+    effect(() => {
+      this.selectedSemster.set(this.semesterList().at(0));
+    });
+  }
+
+  onSemesterChange(semester: string) {
+    this.selectedSemster.set(semester);
+  }
 
   filteredProfessors = computed(() => {
-    console.log(this.courseService.semesters());
-    let profs = this.courseService
-      .semesters()
-      .filter((semester) => semester.year === this.selectedYear())
-      .flatMap((semester) => semester.professors);
-    console.log(profs);
+    const selectedSemester = this.selectedSemster();
     const search = this.searchValue().trim().toLowerCase();
+
+    const professors = this.courseService
+      .semesters()
+      .filter(
+        (semester) => semester.year + semester.semesterType === selectedSemester
+      )
+      .flatMap((semester) => semester.professors);
+
     if (!search) {
-      return profs;
+      return professors;
     }
-    return profs.filter((prof) => prof.name.toLowerCase().includes(search));
+
+    return professors.filter(
+      (prof) =>
+        prof.name.toLowerCase().includes(search) ||
+        prof.courses.some((course) =>
+          course.name.toLowerCase().includes(search)
+        )
+    );
   });
 
   onSearchValueChange(newValue: string) {

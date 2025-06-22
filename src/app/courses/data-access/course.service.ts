@@ -21,11 +21,11 @@ export class CourseService {
   semesters = signal<Semester[]>([]);
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
-yearList = computed(() =>
-  Array.from(
-    new Set(this.semesters().map(s => s.year))
-  ).sort((a, b) => b - a)
-);
+  semesterList = computed(() =>
+    Array.from(
+      new Set(this.semesters().map((s) => s.year + s.semesterType))
+    ).sort((a, b) => b.localeCompare(a))
+  );
 
   constructor() {
     this.loadCourses();
