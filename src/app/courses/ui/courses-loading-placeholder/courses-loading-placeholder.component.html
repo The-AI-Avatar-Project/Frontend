@@ -1,0 +1,23 @@
+<ul class="semester-filter">
+  @for (_ of [1,2,3,4,5]; track _) {
+    <li>
+      <div class="semester-button skeleton skeleton-semester"></div>
+    </li>
+  }
+</ul>
+@for (_ of [1, 2, 3]; track _) {
+<div class="courses-item">
+  <div class="professor">
+    <div class="professor-image skeleton"></div>
+    <div class="professor-name skeleton skeleton-text"></div>
+  </div>
+  <ul class="courses-list skeleton-list">
+    @for (__ of [1, 2, 3]; track __) {
+    <li class="courses-course">
+      <div class="course-image skeleton"></div>
+      <div class="course-name skeleton skeleton-text"></div>
+    </li>
+    }
+  </ul>
+</div>
+}

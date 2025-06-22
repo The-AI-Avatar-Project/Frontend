@@ -1,0 +1,26 @@
+.semester-filter{
+  display: flex;
+  margin: 0;
+  margin-left: 1px;
+  margin-bottom: 18px;
+  padding: 0;
+  list-style-type: none;
+  width: 530px;
+  height: 50px;
+  border-radius: 15px;
+  overflow-x: auto;
+}
+
+.semester-button{
+  width: 90px;
+  font-size: 16px;
+  height: 35px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.semester-button-selected{
+  background-color: var(--secondary-color);
+}

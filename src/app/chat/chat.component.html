@@ -3,7 +3,7 @@
     <mat-icon class="back-icon">arrow_back</mat-icon>
     <p class="back-label">Return</p>
   </div>
-  <h2 class="chat-greeting">Hello, Thomas!</h2>
+  <h2 class="chat-greeting">Hello, {{ this.firstName() | titlecase }}!</h2>
   <div class="chat-main">
     <app-avatar
       class="chat-avatar"

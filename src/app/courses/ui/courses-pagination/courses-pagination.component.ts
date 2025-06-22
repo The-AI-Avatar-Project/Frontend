@@ -1,5 +1,5 @@
-import { Component, computed, input, output, signal } from '@angular/core';
-import { Course, Professor } from '../../../shared/interfaces/courses';
+import { Component, computed, input, signal } from '@angular/core';
+import { Professor } from '../../../shared/interfaces/courses';
 import { CoursesItemComponent } from '../courses-item/courses-item.component';
 import { NgClass } from '@angular/common';
 

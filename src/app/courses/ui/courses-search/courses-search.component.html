@@ -20,19 +20,5 @@
     </button>
   </div>
 
-  <ul class="year-filter">
-    @for(year of yearList(); track year){
-    <li>
-      <button
-        [ngClass]="
-          year === selectedYear()
-            ? 'year-button year-button-selected'
-            : 'year-button'
-        "
-      >
-        {{ year }}
-      </button>
-    </li>
-    }
-  </ul>
+
 </div>

@@ -1,39 +1,87 @@
+import { Semester, SemesterType } from '../../shared/interfaces/courses';
+import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { Course, CoursesReponse } from '../../shared/interfaces/courses';
-import { API_URL } from '../../shared/constants/constants';
-import { catchError, EMPTY, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-export interface CourseState {
-  availableCourses: Course[];
+interface ApiCourseResponse {
+  path: string;
+  name: string;
+  attributes: {
+    owner: string[];
+    icon: string[];
+  };
 }
+
 @Injectable({
   providedIn: 'root',
 })
 export class CourseService {
   private http = inject(HttpClient);
 
-
-  private state = signal<CourseState>({
-    availableCourses: [],
-  });
-
-  availableCourses = computed(() => this.state().availableCourses);
-
-  private availableCoursesLoaded$ = this.fetchAvailableCourses();
+  semesters = signal<Semester[]>([]);
+  loading = signal<boolean>(true);
+  error = signal<string | null>(null);
+  semesterList = computed(() =>
+    Array.from(
+      new Set(this.semesters().map((s) => s.year + s.semesterType))
+    ).sort((a, b) => b.localeCompare(a))
+  );
 
   constructor() {
-    this.availableCoursesLoaded$.pipe(takeUntilDestroyed()).subscribe((courses) => this.state.update((state) => ({
-      ...state,
-      availableCourses: [...state.availableCourses, ...courses]
-    })))
+    this.loadCourses();
   }
 
-  private fetchAvailableCourses() {
-    return this.http.get<CoursesReponse>(`${API_URL}/courses`).pipe(
-      catchError((err) => EMPTY),
-      map((response) => response.data)
-    );
+  private loadCourses() {
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.http
+      .get<ApiCourseResponse[]>('http://localhost:8080/rooms')
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: (response) => {
+          const parsedSemesters = this.parseApiResponse(response);
+          this.semesters.set(parsedSemesters);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set('Failed to load courses');
+          this.loading.set(false);
+          console.error('Error loading courses:', err);
+        },
+      });
+  }
+
+  private parseApiResponse(courses: ApiCourseResponse[]): Semester[] {
+    const semesterMap = new Map<string, Semester>();
+
+    for (const course of courses) {
+      const [, year, semesterType, professorName] = course.path.split('/');
+
+      const semesterKey = `${year}-${semesterType}`;
+
+      if (!semesterMap.has(semesterKey)) {
+        semesterMap.set(semesterKey, {
+          year: Number(year),
+          semesterType: semesterType as SemesterType,
+          professors: [],
+        });
+      }
+
+      const semester = semesterMap.get(semesterKey)!;
+
+      let professor = semester.professors.find((p) => p.name === professorName);
+      if (!professor) {
+        professor = { name: professorName, courses: [] };
+        semester.professors.push(professor);
+      }
+
+      professor.courses.push({
+        name: course.name,
+        image: course.attributes.icon?.[0],
+      });
+    }
+
+    return Array.from(semesterMap.values());
   }
 }
