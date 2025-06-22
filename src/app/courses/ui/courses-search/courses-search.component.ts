@@ -3,6 +3,7 @@ import { Component, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-courses-search',
@@ -11,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    TranslocoPipe
   ],
   templateUrl: './courses-search.component.html',
   styleUrl: './courses-search.component.scss',

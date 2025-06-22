@@ -4,6 +4,7 @@ import { CoursesPaginationComponent } from './ui/courses-pagination/courses-pagi
 import { CourseService } from './data-access/course.service';
 import { CoursesLoadingPlaceholderComponent } from './ui/courses-loading-placeholder/courses-loading-placeholder.component';
 import { CoursesSemesterFilterComponent } from './ui/courses-semester-filter/courses-semester-filter.component';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-courses',
@@ -11,7 +12,8 @@ import { CoursesSemesterFilterComponent } from './ui/courses-semester-filter/cou
     CoursesSearchComponent,
     CoursesPaginationComponent,
     CoursesLoadingPlaceholderComponent,
-    CoursesSemesterFilterComponent
+    CoursesSemesterFilterComponent,
+    TranslocoPipe,
   ],
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.scss',
