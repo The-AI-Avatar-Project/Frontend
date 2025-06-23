@@ -15,6 +15,8 @@ import {providePrimeNG} from 'primeng/config';
 
 import Noir from './ressource/noir';
 
+const defaultLang = localStorage.getItem('lang') || 'en';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -37,6 +39,18 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: false
         }
       }
-    })
+    }),
+
+    provideHttpClient(withInterceptors([tokenInterceptor])),
+    provideHttpClient(),
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'de'],
+        defaultLang,
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader,
+    }),
   ],
 };
