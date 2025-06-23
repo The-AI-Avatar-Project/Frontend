@@ -1,22 +1,24 @@
-<mat-toolbar color="primary" class="navbar">
-  <img class="logo" src="Logo.png" />
-  <span class="spacer"></span>
-  <nav class="nav-links">
-    @for(link of navItems; track link){
-    <a mat-button [routerLink]="[link.path]">{{ link.label }}</a>
-    }
-  </nav>
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="menu"
-    class="mobile-menu"
-    aria-label="Menü öffnen"
-  >
-    <mat-icon>menu</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    @for(link of navItems; track link){
-    <button mat-menu-item [routerLink]="[link.path]">{{ link.label }}</button>
-    }
-  </mat-menu>
-</mat-toolbar>
+<div class="card">
+
+<p-menubar [model]="items">
+  <ng-template #start>
+
+  </ng-template>
+  <ng-template #item let-item let-root="root">
+    <a pRipple class="flex items-center p-menubar-item-link">
+      <span>{{ item.label }}</span>
+    </a>
+  </ng-template>
+  <ng-template #end>
+    <div class="flex items-center">
+      <div class="flex items-center gap-2">
+
+      <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" (click)="menu.toggle($event)" />
+      <p-menu #menu [model]="userDropdownItems" [popup]="true" />
+      </div>
+
+    </div>
+  </ng-template>
+</p-menubar>
+</div>
+

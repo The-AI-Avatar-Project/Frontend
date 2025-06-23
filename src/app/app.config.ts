@@ -10,12 +10,15 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { tokenInterceptor } from './auth/token.interceptor';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './transloco-loader';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {providePrimeNG} from 'primeng/config';
+
+import Noir from './ressource/noir';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-
     provideHttpClient(withInterceptors([tokenInterceptor])), provideHttpClient(), provideTransloco({
         config: {
           availableLangs: ['en', 'es'],
@@ -26,5 +29,14 @@ export const appConfig: ApplicationConfig = {
         },
         loader: TranslocoHttpLoader
       }),
+    provideAnimationsAsync(),
+    providePrimeNG({
+      theme: {
+        preset: Noir,
+        options: {
+          darkModeSelector: false
+        }
+      }
+    })
   ],
 };
