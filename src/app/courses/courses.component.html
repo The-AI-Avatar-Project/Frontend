@@ -6,12 +6,13 @@
   ></app-courses-search>
   @if(!coursesLoading()){
   <app-courses-semester-filter
-    [selectedSemester]="selectedSemster() || ''"
+    [selectedSemester]="selectedSemester() || ''"
     [semesterList]="semesterList()"
     (onSemesterChange)="onSemesterChange($event)"
   >
   </app-courses-semester-filter>
   <app-courses-pagination
+    [selectedSemester]="selectedSemester() || ''"
     [professors]="filteredProfessors()"
   ></app-courses-pagination>
   }@else{

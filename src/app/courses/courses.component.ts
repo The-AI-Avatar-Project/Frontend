@@ -34,9 +34,6 @@ export class CoursesComponent {
   selectedSemester = signal<string | undefined>('');
 
 
-
-
-
   constructor() {
     effect(() => {
       this.selectedSemester.set(this.semesterList().at(0));

@@ -1,12 +1,8 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { ChatMessageResponse, Sender } from '../../shared/interfaces/chat';
+import { ChatMessage, ChatMessageResponse, Sender } from '../../shared/interfaces/chat';
 import { API_URL } from '../../shared/constants/constants';
 import { AuthService } from '../../auth/auth.service';
 
-export interface ChatMessage {
-  sender: Sender;
-  message: string;
-}
 
 @Injectable({ providedIn: 'root' })
 export class VideoStreamService {
@@ -34,29 +30,35 @@ export class VideoStreamService {
       this.socket.close();
     }
 
-    this.socket = new WebSocket('ws://192.168.2.150:8080/ws');
+    this.socket = new WebSocket('ws://localhost:8080/ws');
 
     this.socket.addEventListener('open', () => {
       console.log('WebSocket connection established');
       this._error.set(null);
     });
 
-    this.socket.addEventListener('message', (event) => {
-      console.log('WebSocket message received:', event.data);
-      let responseText = event.data;
-      try {
-        const obj = JSON.parse(event.data) as ChatMessageResponse;
-        if (obj && obj.responseText) {
-          responseText = obj.responseText;
-        }
-      } catch (e) {
-        console.warn('Could not parse WebSocket message as JSON:', e);
-      }
-      this._messages.update((msgs) => [
-        ...msgs,
-        { sender: Sender.Bot, message: responseText },
-      ]);
-    });
+
+this.socket.addEventListener('message', (event) => {
+  console.log('WebSocket message received:', event.data);
+  try {
+    const { responseText } = JSON.parse(event.data);
+    this._messages.update((msgs) => [
+      ...msgs,
+      {
+        sender: Sender.Bot,
+        message: responseText.response,
+        references: responseText.references?.length ? responseText.references : undefined,
+      },
+    ]);
+  } catch (e) {
+    this._messages.update((msgs) => [
+      ...msgs,
+      { sender: Sender.Bot, message: event.data },
+    ]);
+  }
+});
+
+
 
     this.socket.addEventListener('error', (event) => {
       console.error('WebSocket error:', event);
@@ -70,7 +72,7 @@ export class VideoStreamService {
     });
   }
 
-  async startStream(userMessage: string) {
+  async startStream(userMessage: string, roomPath: string) {
     this._isStreaming.set(true);
     this._error.set(null);
 
@@ -106,13 +108,21 @@ export class VideoStreamService {
     }
 
     try {
-      const apiUrl = `${API_URL}/ai/text/1`;
+      const apiUrl = `${API_URL}/ai/text`;
       const bearertoken = this.authservice.getToken();
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain', 'Authorization': `Bearer ${bearertoken}`, },
-        body: userMessage,
-      });
+       const body = JSON.stringify({
+      text: userMessage,
+      roomPath: "/" + roomPath,
+      chatId: "1",
+    });
+  const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bearertoken}`,
+      },
+      body,
+    });
 
       if (!response.body) throw new Error('No video stream received');
 

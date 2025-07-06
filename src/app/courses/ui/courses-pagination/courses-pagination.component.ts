@@ -13,7 +13,7 @@ export class CoursesPaginationComponent {
   Array = Array;
 
   professors = input.required<Professor[]>();
-
+  selectedSemester = input<string>();
   ELEMENTS_PER_PAGE = signal(3);
 
   currentPage = signal(1);
@@ -25,6 +25,7 @@ export class CoursesPaginationComponent {
   displayedProfessors = computed(() => {
     const startIndex = (this.currentPage() - 1) * this.ELEMENTS_PER_PAGE();
     const endIndex = startIndex + this.ELEMENTS_PER_PAGE();
+     console.log(this.professors().slice(startIndex, endIndex))
     return this.professors().slice(startIndex, endIndex);
   });
 }

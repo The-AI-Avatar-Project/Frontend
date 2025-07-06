@@ -6,6 +6,7 @@ export enum Sender {
 export interface ChatMessage {
   sender: Sender;
   message: string;
+  references?: string[];
 }
 
 export interface ChatMessageResponse {
