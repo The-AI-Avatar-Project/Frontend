@@ -1,10 +1,16 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
-import { CoursesSearchComponent } from './ui/courses-search/courses-search.component';
-import { CoursesPaginationComponent } from './ui/courses-pagination/courses-pagination.component';
-import { CourseService } from './data-access/course.service';
-import { CoursesLoadingPlaceholderComponent } from './ui/courses-loading-placeholder/courses-loading-placeholder.component';
-import { CoursesSemesterFilterComponent } from './ui/courses-semester-filter/courses-semester-filter.component';
-import { TranslocoPipe } from '@jsverse/transloco';
+import {Component, computed, effect, inject, signal} from '@angular/core';
+import {CoursesSearchComponent} from './ui/courses-search/courses-search.component';
+import {CoursesPaginationComponent} from './ui/courses-pagination/courses-pagination.component';
+import {CourseService} from './data-access/course.service';
+import {
+  CoursesLoadingPlaceholderComponent
+} from './ui/courses-loading-placeholder/courses-loading-placeholder.component';
+import {CoursesSemesterFilterComponent} from './ui/courses-semester-filter/courses-semester-filter.component';
+import {TranslocoPipe} from '@jsverse/transloco';
+
+//Prime NG
+import {SelectButtonModule} from 'primeng/selectbutton';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-courses',
@@ -14,6 +20,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
     CoursesLoadingPlaceholderComponent,
     CoursesSemesterFilterComponent,
     TranslocoPipe,
+    FormsModule,
+    SelectButtonModule,
   ],
   templateUrl: './courses.component.html',
   styleUrl: './courses.component.scss',
@@ -22,22 +30,26 @@ export class CoursesComponent {
   searchValue = signal('');
   courseService = inject(CourseService);
   coursesLoading = this.courseService.loading;
-
   semesterList = this.courseService.semesterList;
-  selectedSemster = signal<string | undefined>('');
+  selectedSemester = signal<string | undefined>('');
+
+
+
+
 
   constructor() {
     effect(() => {
-      this.selectedSemster.set(this.semesterList().at(0));
+      this.selectedSemester.set(this.semesterList().at(0));
     });
+
   }
 
   onSemesterChange(semester: string) {
-    this.selectedSemster.set(semester);
+    this.selectedSemester.set(semester);
   }
 
   filteredProfessors = computed(() => {
-    const selectedSemester = this.selectedSemster();
+    const selectedSemester = this.selectedSemester();
     const search = this.searchValue().trim().toLowerCase();
 
     const professors = this.courseService
@@ -62,5 +74,9 @@ export class CoursesComponent {
 
   onSearchValueChange(newValue: string) {
     this.searchValue.set(newValue);
+  }
+
+  selectedSemster() {
+    return undefined;
   }
 }

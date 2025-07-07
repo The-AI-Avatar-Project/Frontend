@@ -12,8 +12,9 @@
   <ng-template #end>
     <div class="flex items-center">
       <div class="flex items-center gap-2">
-
-      <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" (click)="menu.toggle($event)" />
+        <p-selectbutton [options]="stateOptions" [allowEmpty]="false" [(ngModel)]="value" (ngModelChange)="this.LanguageService.switchLanguage(value);setUserLanguage(value)" ptionLabel="label" optionValue="value" aria-labelledby="basic" />
+        <p>{{username}}</p>
+        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" (click)="menu.toggle($event)" />
       <p-menu #menu [model]="userDropdownItems" [popup]="true" />
       </div>
 

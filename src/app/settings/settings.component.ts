@@ -1,4 +1,4 @@
-import {Component, effect, signal} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TableModule} from 'primeng/table';
 import {newCourse, SCourse} from '../shared/interfaces/courses';
@@ -9,6 +9,12 @@ import {Dialog} from 'primeng/dialog';
 import {Step, StepList, StepPanel, StepPanels, Stepper} from 'primeng/stepper';
 import {FileUpload} from 'primeng/fileupload';
 import {Listbox} from 'primeng/listbox';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {UserService} from '../shared/services/user.service';
+import {User} from '../shared/interfaces/user';
+import {CourseService} from '../courses/data-access/course.service';
+import {RoomService} from '../shared/services/room.service';
+import {AuthService} from '../auth/auth.service';
 
 interface Column {
   field: string;
@@ -19,6 +25,8 @@ interface FileEntry {
   name: string;
   code: string;
 }
+
+
 
 @Component({
   selector: 'app-settings',
@@ -38,6 +46,7 @@ interface FileEntry {
     FileUpload,
     NgIf,
     Listbox,
+    MultiSelectModule
   ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
@@ -48,6 +57,7 @@ export class SettingsComponent {
   addModalVisible = false;
   editModalVisible = false;
   deleteModalVisible = false;
+  inviteModalVisible = false;
 
   selectedCourse: newCourse | null = null;
   newCourse: newCourse = {id: '', courseID: '', name: ''};
@@ -56,12 +66,40 @@ export class SettingsComponent {
   // Signal accessor for the courses
   courses = SCourse;
 
+
+  protected userService: UserService = inject(UserService);
+  protected courseService: CourseService = inject(CourseService);
+  protected roomService: RoomService = inject(RoomService);
+  protected auth: AuthService = inject(AuthService);
+
+  users!: User[];
+
+  selectedUser?: User[];
+
+
+  showAllRooms() {
+    this.roomService.getAllRooms().subscribe({
+      next: (data) => {
+        console.log(data)
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Räume:', err);
+      }
+    });
+  }
+
+
+
   ngOnInit() {
     this.cols = [
       {field: 'courseID', header: 'Kurs Bezeichnung'},
       {field: 'name', header: 'Vorlesung'},
     ];
+
+    this.roomService.createGroup();
+
   }
+
 
   showCourse(course: newCourse) {
     console.log('Show:', course);
@@ -72,6 +110,7 @@ export class SettingsComponent {
     this.addModalVisible = true;
   }
 
+
   addCourse() {
     SCourse.update(current => [...current, this.newCourse]);
     this.addModalVisible = false;
@@ -81,6 +120,32 @@ export class SettingsComponent {
     this.editedCourse = {...course};
     this.editModalVisible = true;
   }
+
+  openInviteModal(course: newCourse) {
+
+    this.userService.getUsers().subscribe({
+      next: (data) => {
+        this.users = data;
+        console.log('Antwort von /users:', this.users);
+      },
+      error: (err) => { console.error('Fehler beim Laden der Benutzer:', err);
+      }
+    });
+
+    this.inviteModalVisible = true;
+  }
+
+  inviteUser() {
+    this.inviteModalVisible = false;
+
+    this.selectedUser?.forEach(user => {
+      console.log(user.email)
+    })
+
+    this.selectedUser = []
+
+  }
+
 
   updateCourse() {
     SCourse.update(current =>
@@ -167,9 +232,6 @@ export class SettingsComponent {
   //RECORD AUDIO
 
 
-
-
-
   // UPLOAD FILES AND SHOW THEM
 
 
@@ -222,4 +284,6 @@ export class SettingsComponent {
       this.downloadFile(selected.name);
     }
   }
+
+
 }

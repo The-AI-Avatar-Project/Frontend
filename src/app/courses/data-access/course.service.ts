@@ -7,8 +7,7 @@ interface ApiCourseResponse {
   path: string;
   name: string;
   attributes: {
-    owner: string[];
-    icon: string[];
+    [key: string]: string[]; // Accept any attribute key
   };
 }
 
@@ -52,6 +51,19 @@ export class CourseService {
       });
   }
 
+
+  getRooms(){
+    this.http.get('http://localhost:8080/rooms')
+      .subscribe({
+        next: (response) => {
+          console.log('Antwort von /rooms', response);
+        },
+        error: (err) => {
+          console.log("Fehler beim Laden der Räume", err)
+        }
+      })
+  }
+
   private parseApiResponse(courses: ApiCourseResponse[]): Semester[] {
     const semesterMap = new Map<string, Semester>();
 
@@ -78,10 +90,20 @@ export class CourseService {
 
       professor.courses.push({
         name: course.name,
-        image: course.attributes.icon?.[0],
+        // image: course.attributes.icon?.[0],
       });
     }
 
     return Array.from(semesterMap.values());
   }
+
+
+
+
+
+
+
+
+
+
 }
