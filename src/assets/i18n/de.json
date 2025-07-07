@@ -2,5 +2,9 @@
   "courses": {
     "title": "Verfügbare Kurse",
     "search": "Suche..."
+  },
+  "chat": {
+    "sources": "Quellen",
+    "page": "Seite"
   }
 }

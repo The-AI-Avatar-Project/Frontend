@@ -10,4 +10,11 @@ import { Professor } from '../../../shared/interfaces/courses';
 })
 export class CoursesItemComponent {
   professor = input.required<Professor>()
+  selectedSemester = input<string>();
+formatSemester(semester: string | undefined | null): string {
+  if (!semester || semester.length < 5) {
+    return ''; 
+  }
+  return semester.slice(0, 4) + '_' + semester.slice(4);
+}
 }

@@ -10,6 +10,17 @@
       "
     >
       {{ message.message }}
+      @if(message.sender === Sender.Bot && message.references){ 
+        <br>
+        <span>{{ "chat.sources" | transloco }} </span>
+        <br>
+      @for (reference of message.references; track reference) {
+        <button class="as-link" (click)="download(reference)">
+          {{ reference.split(':')[0] }} {{ "chat.page" | transloco }} {{ reference.split(':')[1] }}
+        </button>
+      }
+        
+      }
     </div>
     } @if (loading) {
     <div class="loader"></div>

@@ -1,7 +1,7 @@
 <div class="courses-pagination-container">
   <div class="courses-pages-item-grid">
     @for(professor of displayedProfessors(); track professor.courses){
-    <app-courses-item [professor]="professor" />
+    <app-courses-item [selectedSemester]="selectedSemester() || ''" [professor]="professor"/>
     } @if(displayedProfessors().length === 0){
     <p class="courses-not-found">No results found for given parameters.</p>
     }
