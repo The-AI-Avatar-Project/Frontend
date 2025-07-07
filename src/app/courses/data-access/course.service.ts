@@ -90,10 +90,10 @@ export class CourseService {
 
       professor.courses.push({
         name: course.name,
-        // image: course.attributes.icon?.[0],
+        image: course.attributes.icon?.[0],
       });
     }
-
+    console.log(semesterMap.values())
     return Array.from(semesterMap.values());
   }
 
