@@ -15,6 +15,6 @@ formatSemester(semester: string | undefined | null): string {
   if (!semester || semester.length < 5) {
     return ''; 
   }
-  return semester.slice(0, 4) + '-' + semester.slice(4);
+  return semester.slice(0, 4) + '_' + semester.slice(4);
 }
 }

@@ -9,9 +9,9 @@
     '/chat',
     [
       formatSemester(selectedSemester()),
-      professor()?.name ?? 'unbekannt',
-      course?.name ?? 'unbekannt'
-    ].join('-')
+      professor()?.name ?? 'unkown',
+      course?.name ?? 'unkown'
+    ].join('_')
   ]">
       <img
         class="course-image"

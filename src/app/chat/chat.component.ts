@@ -40,10 +40,11 @@ export class ChatComponent {
     this.authService.getFirstName().then((name) => {
       this.firstName.set(name);
     });
-      this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(params => {
     const roomPath = params.get('roomPath');
-    const slicedRoomPath = roomPath?.replaceAll("-", "/")
-      this.roomPath.set(slicedRoomPath);
+    const slicedRoomPath = roomPath?.replaceAll("_", "/").replaceAll("%20", " ")
+    this.streamService.resetChat;
+    this.roomPath.set(slicedRoomPath);
     console.log(slicedRoomPath)
   });
   }
