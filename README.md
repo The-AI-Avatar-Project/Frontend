@@ -2,6 +2,14 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.11.
 
+## Docker Setup
+run 
+```bash
+docker build -t frontend .
+docker run -p 80:80 frontend
+```
+make sure that http://localhost/* is added to the accepted redirect rules in keycloak adminer
+
 ## Development server
 
 To start a local development server, run:
