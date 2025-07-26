@@ -5,11 +5,7 @@
   </div>
   <h2 class="chat-greeting">Hello, {{ this.firstName() | titlecase }}!</h2>
   <div class="chat-main">
-    <app-avatar
-      class="chat-avatar"
-      [videoUrl]="videoUrl()"
-      [posterImage]="posterImage()"
-    />
+    <app-avatar class="chat-avatar" [posterImage]="posterImage()" />
     <app-chat-window
       class="chat-window"
       [chatLog]="chatLog()"
