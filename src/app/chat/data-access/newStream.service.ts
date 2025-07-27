@@ -101,7 +101,7 @@ export class VideoChatService {
       const token = this.authService.getToken();
       await this.waitForPlaylist(url, 20_000, token!);
     } catch (e: any) {
-      this._error.set('Playlist nicht erreichbar: ' + e.message);
+      this._error.set('Playlist not available: ' + e.message);
       this._isStreaming.set(false);
       return;
     }
@@ -120,10 +120,10 @@ export class VideoChatService {
       } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
         videoEl.src = url;
       } else {
-        throw new Error('HLS wird nicht unterstützt');
+        throw new Error('HLS not supported');
       }
     } catch (e: any) {
-      this._error.set('Fehler beim Starten des Streams');
+      this._error.set('Error while starting stream');
       this._isStreaming.set(false);
       return;
     }
@@ -139,9 +139,10 @@ export class VideoChatService {
       if (ev.data === 'update' && this.hls) {
         this.hls.startLoad();
         this.hls.startLoad(-1);
+        this._isStreaming.set(false);
       }
     };
-    this.ws.onerror = () => this._error.set('WebSocket-Fehler');
+    this.ws.onerror = () => this._error.set('Websocket Error');
     this.ws.onclose = () => {
       this._isStreaming.set(false);
       console.log('stopped streaming');
