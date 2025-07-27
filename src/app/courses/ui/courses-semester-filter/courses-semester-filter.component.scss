@@ -9,6 +9,23 @@
   height: 50px;
   border-radius: 15px;
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent; 
+}
+
+
+.semester-filter::-webkit-scrollbar {
+  height: 4px; 
+  background: transparent;
+}
+
+.semester-filter::-webkit-scrollbar-thumb {
+  background: #d1d5db; 
+  border-radius: 2px;
+}
+
+.semester-filter::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .semester-button{
@@ -19,6 +36,7 @@
   border-radius: 15px;
   cursor: pointer;
   margin-right: 5px;
+  background-color: var(--light-primary);
 }
 
 .semester-button-selected{

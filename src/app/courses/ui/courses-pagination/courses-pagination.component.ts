@@ -25,7 +25,6 @@ export class CoursesPaginationComponent {
   displayedProfessors = computed(() => {
     const startIndex = (this.currentPage() - 1) * this.ELEMENTS_PER_PAGE();
     const endIndex = startIndex + this.ELEMENTS_PER_PAGE();
-     console.log(this.professors().slice(startIndex, endIndex))
     return this.professors().slice(startIndex, endIndex);
   });
 }
