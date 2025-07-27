@@ -5,7 +5,14 @@
   </div>
   <ul class="courses-list">
     @for(course of professor().courses; track course){
-    <li class="courses-course" [routerLink]="['/chat']">
+    <a class="courses-course"   [routerLink]="[
+    '/chat',
+    [
+      formatSemester(selectedSemester()),
+      professor()?.name ?? 'unkown',
+      course?.name ?? 'unkown'
+    ].join('_')
+  ]">
       <img
         class="course-image"
         src="course_icon_{{course.name }}.png"
@@ -14,7 +21,7 @@
       <p class="course-name">
         {{ course.name }}
       </p>
-    </li>
+    </a>
     }
   </ul>
 </div>

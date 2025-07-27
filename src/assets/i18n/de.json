@@ -2,5 +2,12 @@
   "courses": {
     "title": "Verfügbare Kurse",
     "search": "Suche..."
+  },
+  "chat": {
+    "sources": "Quellen",
+    "page": "s."
+  },
+  "footer": {
+    "text": "Diese Anwendung nutzt künstliche Intelligenz (KI) zur automatisierten Beantwortung von Anfragen und zur Generierung von Videos."
   }
 }

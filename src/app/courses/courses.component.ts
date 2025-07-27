@@ -11,7 +11,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 //Prime NG
 import {SelectButtonModule} from 'primeng/selectbutton';
 import {FormsModule} from '@angular/forms';
-import {AuthService} from '../auth/auth.service';
 
 @Component({
   selector: 'app-courses',
@@ -34,20 +33,11 @@ export class CoursesComponent {
   semesterList = this.courseService.semesterList;
   selectedSemester = signal<string | undefined>('');
 
-  protected auth: AuthService = inject(AuthService);
-
 
   constructor() {
     effect(() => {
       this.selectedSemester.set(this.semesterList().at(0));
     });
-
-    console.log(this.auth.getUserGroups())
-    console.log(this.auth.isLoggedIn())
-    console.log(this.auth.getFirstName())
-    console.log(this.auth.getLastName());
-    console.log(this.auth.getProfile())
-    console.log(this.auth.getUserGroups())
 
   }
 

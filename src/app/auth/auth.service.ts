@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Keycloak from 'keycloak-js';
-import { KEYCLOAK_URL } from '../shared/constants/constants';
+import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -8,7 +8,7 @@ export class AuthService {
 
   constructor() {
     this.keycloak = new Keycloak({
-      url: KEYCLOAK_URL,
+      url: environment.keykloakUrl,
       realm: 'AI-Avatar',
       clientId: 'frontend-client',
     });

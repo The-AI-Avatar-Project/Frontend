@@ -1,6 +1,6 @@
 <div class="chat-window">
   <div class="chat-display">
-    @for (message of chatLog; track message) {
+    @for (message of chatLogUnified(); track message) {
     <div
       class="chat-window-message"
       [ngClass]="
@@ -10,29 +10,66 @@
       "
     >
       {{ message.message }}
+      @if(message.sender === Sender.Bot && message.references){
+      <br />
+      <br />
+      <span>{{ "chat.sources" | transloco }}: </span>
+      <br />
+      <ul class="chat-references">
+        @for (reference of message.references; track reference) {
+        <li class="chat-reference-item">
+          <button class="as-link" (click)="download(reference.page)">
+            {{ reference.page.split("/").at(-1) }}
+          </button>
+          {{ "chat.page" | transloco }}
+          {{ reference.pageNumbers.join(",") }}
+        </li>
+        }
+      </ul>
+      }
     </div>
-    } @if (loading) {
+    } @if (loading()) {
     <div class="loader"></div>
     }
   </div>
 
   <div class="chat-input-row">
+    @if(!isRecording()){
     <div class="chat-input-box">
       <input
         class="chat-input"
         type="text"
         placeholder="Type here ..."
-        [value]="userInput"
+        [value]="userInput()"
         (input)="onInputChange($event)"
         (keyup.enter)="onSend()"
       />
+      <button class="chat-input-button" (click)="onStartRecord()">
+        <mat-icon fontIcon="mic"></mat-icon>
+      </button>
       <button
         class="chat-input-button"
         (click)="onSend()"
-        [disabled]="loading || !userInput.trim()"
+        [disabled]="loading || !userInput().trim()"
       >
         <mat-icon fontIcon="arrow_upward"></mat-icon>
       </button>
     </div>
+    }@else{
+    <div class="chat-input-box recording-box">
+      <div class="recording-buttons">
+        <button class="chat-input-button" (click)="onAcceptRecording()">
+          <mat-icon fontIcon="check"></mat-icon>
+        </button>
+        <button class="chat-input-button cancel" (click)="onCancelRecording()">
+          <mat-icon fontIcon="close"></mat-icon>
+        </button>
+      </div>
+
+      <div class="recording-indicator">
+        <mat-icon fontIcon="graphic_eq" class="recording-icon"></mat-icon>
+      </div>
+    </div>
+    }
   </div>
 </div>

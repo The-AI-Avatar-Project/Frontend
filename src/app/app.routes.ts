@@ -9,7 +9,7 @@ export const routes: Routes = [
       import('./courses/courses.component').then((m) => m.CoursesComponent),
   },
   {
-    path: 'chat',
+    path: 'chat/:roomPath',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./chat/chat.component').then((m) => m.ChatComponent),
