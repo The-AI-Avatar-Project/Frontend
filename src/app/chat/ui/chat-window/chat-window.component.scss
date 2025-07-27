@@ -192,3 +192,35 @@
 .chat-reference-item{
   margin-left: 20px;
 }
+
+.recording-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.recording-buttons {
+  display: flex;
+  margin-left: auto;
+}
+
+.recording-icon {
+  animation: pulse 1s infinite;
+  color: var(--primary-color);
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}

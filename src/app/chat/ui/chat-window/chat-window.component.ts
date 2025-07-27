@@ -33,6 +33,11 @@ export class ChatWindowComponent {
   userInput = input<string>('');
   loading = input<boolean>(false);
 
+  audioRecordStart = output<void>();
+  audioRecordStop = output<void>();
+  audioRecordCancel = output<void>();
+  isRecording = input<boolean>();
+
   userInputChange = output<string>();
   sendMessage = output<void>();
 
@@ -89,5 +94,17 @@ export class ChatWindowComponent {
 
   onSend(): void {
     this.sendMessage.emit();
+  }
+
+  onStartRecord() {
+    this.audioRecordStart.emit();
+  }
+
+  onAcceptRecording() {
+    this.audioRecordStop.emit();
+  }
+
+  onCancelRecording() {
+    this.audioRecordCancel.emit();
   }
 }
