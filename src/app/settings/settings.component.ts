@@ -7,7 +7,7 @@ import {Button} from 'primeng/button';
 import {InputText} from 'primeng/inputtext';
 import {Dialog} from 'primeng/dialog';
 import {Step, StepList, StepPanel, StepPanels, Stepper} from 'primeng/stepper';
-import {FileUpload} from 'primeng/fileupload';
+import {FileUploadModule } from 'primeng/fileupload';
 import {Listbox} from 'primeng/listbox';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {UserService} from '../shared/services/user.service';
@@ -16,6 +16,8 @@ import {CourseService} from '../courses/data-access/course.service';
 import {RoomService} from '../shared/services/room.service';
 import {AuthService} from '../auth/auth.service';
 import {Select} from 'primeng/select';
+import {MessageService} from 'primeng/api';
+import {Toast} from 'primeng/toast';
 
 interface Column {
   field: string;
@@ -48,11 +50,12 @@ interface RoomIcon {
     Step,
     StepPanels,
     StepPanel,
-    FileUpload,
+    FileUploadModule,
     NgIf,
     Listbox,
     MultiSelectModule,
-    Select
+    Select,
+    Toast
   ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
@@ -64,11 +67,12 @@ export class SettingsComponent {
   protected courseService: CourseService = inject(CourseService);
   protected roomService: RoomService = inject(RoomService);
   protected auth: AuthService = inject(AuthService);
+  protected messageService : MessageService = inject(MessageService);
 
 
   cols: Column[] = [];
 
-  addModalVisible = false;
+  referenceModalVisible = false;
   editModalVisible = false;
   deleteModalVisible = false;
   inviteModalVisible = false;
@@ -98,7 +102,6 @@ export class SettingsComponent {
 
     this.cols = [
       {field: 'name', header: 'Vorlesung'},
-      {field: 'id', header: 'Id'},
     ];
 
 
@@ -127,7 +130,6 @@ export class SettingsComponent {
 
 
   addUsersToRoom() {
-
     const groupID = this.selectedRoomId;
     const userIDs: any = this.selectedUser.map(user => user.id);
 
@@ -145,27 +147,11 @@ export class SettingsComponent {
     this.courseModalVisible = true;
   }
 
+  selectedRoomPath: string = '';
 
-
-
-  showAllRooms() {
-    this.roomService.getAllRooms().subscribe({
-      next: (data) => {
-        console.log(data)
-      },
-      error: (err) => {
-        console.error('Fehler beim Laden der Räume:', err);
-      }
-    });
-  }
-
-
-  showCourse(course: newCourse) {
-    console.log('Show:', course);
-  }
-
-  openAddModal() {
-    this.addModalVisible = true;
+  openReferenceModal(course: any) {
+    this.referenceModalVisible = true;
+    this.selectedRoomPath = course.path;
   }
 
   openEditModal(course: newCourse) {
@@ -190,20 +176,6 @@ export class SettingsComponent {
     this.inviteModalVisible = true;
   }
 
-
-  openDeleteModal(course: newCourse) {
-    this.selectedCourse = course;
-    this.deleteModalVisible = true;
-  }
-
-  // deleteCourse() {
-  //   if (!this.selectedCourse) return;
-  //   SCourse.update(current =>
-  //     current.filter(c => c.id !== this.selectedCourse!.id)
-  //   );
-  //   this.deleteModalVisible = false;
-  //   this.selectedCourse = null;
-  // }
 
 
   // UPLOAD FILES AND SHOW THEM
@@ -255,6 +227,34 @@ export class SettingsComponent {
     if (selected) {
       this.downloadFile(selected.name);
     }
+  }
+
+  selectedUploadFile!: File;
+
+  uploadMultipleFiles(event: any, roomPath: string) {
+    const formData = new FormData();
+    const files: File[] = event.files;
+
+    for (const file of files) {
+      formData.append('file', file); // append each file individually
+    }
+
+    formData.append('roomPath', roomPath);
+
+    fetch('http://localhost:8080/references/upload', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${this.auth.getToken()}`
+      }
+    }).then(response => {
+      if (response.ok) {
+        this.messageService.add({severity: 'info', summary: 'Upload erfolgreich', detail: ''});
+        console.log('Alle Dateien erfolgreich hochgeladen');
+      } else {
+        console.error('Upload fehlgeschlagen:', response.status);
+      }
+    });
   }
 
 
