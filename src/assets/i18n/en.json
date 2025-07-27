@@ -5,9 +5,15 @@
   },
   "chat": {
     "sources": "Sources",
-    "page": "p."
+    "page": "p.",
+    "initalMessage": "Hey, how can I help you?",
+    "return": "Return",
+    "hello": "Hello"
   },
   "footer": {
     "text": "This application uses artificial intelligence (AI) to automatically answer inquiries and generate videos."
+  },
+    "navbar": {
+    "courses": "Courses"
   }
 }
