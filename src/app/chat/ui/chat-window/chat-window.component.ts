@@ -41,11 +41,6 @@ export class ChatWindowComponent {
   userInputChange = output<string>();
   sendMessage = output<void>();
 
-  constructor() {
-    effect(() => console.log(this.chatLog()));
-    effect(() => console.log(this.chatLogUnified()));
-  }
-
   chatLogUnified = computed(() => {
     return this.chatLog().map((chat: ChatMessageDTO) => {
       let referencesMap = new Map<string, number[]>();
