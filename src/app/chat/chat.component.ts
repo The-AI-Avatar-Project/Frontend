@@ -12,6 +12,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { VideoChatService } from './data-access/newStream.service';
+import { AudioRecorderService } from './data-access/audio-recorder.service';
 
 @Component({
   selector: 'app-chat',
@@ -30,12 +31,14 @@ export class ChatComponent {
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private streamService = inject(VideoChatService);
+  private audioService = inject(AudioRecorderService);
 
   @ViewChild(AvatarComponent) avatar!: AvatarComponent;
 
   firstName = signal<string | undefined>('');
   roomPath = signal<string | undefined>('');
   userInput = signal('');
+  isRecording = signal(false);
 
   // Service data
   videoUrl = this.streamService.playlistUrl;
@@ -63,5 +66,41 @@ export class ChatComponent {
     const videoEl = this.avatar.videoPlayer.nativeElement;
     this.streamService.startStream(txt, this.roomPath()!, videoEl);
     this.userInput.set('');
+  }
+
+  async onAudioRecordedStart() {
+    this.isRecording.set(true);
+
+    try {
+      await this.audioService.startRecording();
+    } catch (err) {
+      console.error('Error while starting the recording:', err);
+    }
+  }
+
+  async onAudioRecordedStop() {
+    this.isRecording.set(false);
+
+    console.log('stopped audio');
+
+    try {
+      const audioBlob = await this.audioService.stopRecording();
+      const audioFile = new File([audioBlob], 'audio.wav', {
+        type: 'audio/wav',
+      });
+      const videoEl = this.avatar.videoPlayer.nativeElement;
+      this.streamService.startStreamAudio(audioFile, this.roomPath()!, videoEl);
+    } catch (err) {
+      console.error('Error while stopping the recording:', err);
+    }
+  }
+
+  async onCancelRecording() {
+    this.isRecording.set(false);
+    try {
+      await this.audioService.stopRecording();
+    } catch (err) {
+      console.error('Error while stopping the recording:', err);
+    }
   }
 }

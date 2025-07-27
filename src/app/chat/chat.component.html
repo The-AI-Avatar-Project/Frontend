@@ -11,8 +11,12 @@
       [chatLog]="chatLog()"
       [loading]="isStreaming()"
       [userInput]="userInput()"
+      [isRecording]="isRecording()"
       (userInputChange)="onUserInputChange($event)"
       (sendMessage)="onSendMessage()"
+      (audioRecordStart)="onAudioRecordedStart()"
+      (audioRecordStop)="onAudioRecordedStop()"
+      (audioRecordCancel)="onCancelRecording()"
     />
   </div>
 

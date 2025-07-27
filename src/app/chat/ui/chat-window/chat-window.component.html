@@ -34,6 +34,7 @@
   </div>
 
   <div class="chat-input-row">
+    @if(!isRecording()){
     <div class="chat-input-box">
       <input
         class="chat-input"
@@ -43,6 +44,9 @@
         (input)="onInputChange($event)"
         (keyup.enter)="onSend()"
       />
+      <button class="chat-input-button" (click)="onStartRecord()">
+        <mat-icon fontIcon="mic"></mat-icon>
+      </button>
       <button
         class="chat-input-button"
         (click)="onSend()"
@@ -51,5 +55,21 @@
         <mat-icon fontIcon="arrow_upward"></mat-icon>
       </button>
     </div>
+    }@else{
+    <div class="chat-input-box recording-box">
+      <div class="recording-buttons">
+        <button class="chat-input-button" (click)="onAcceptRecording()">
+          <mat-icon fontIcon="check"></mat-icon>
+        </button>
+        <button class="chat-input-button cancel" (click)="onCancelRecording()">
+          <mat-icon fontIcon="close"></mat-icon>
+        </button>
+      </div>
+
+      <div class="recording-indicator">
+        <mat-icon fontIcon="graphic_eq" class="recording-icon"></mat-icon>
+      </div>
+    </div>
+    }
   </div>
 </div>
