@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from '../../auth/auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class LanguageService {
 
 
   createRoom(){
-    const url = 'http://localhost:8080/rooms';
+    const url = `${environment.apiUrl}/rooms`;
     const body = {
       name: "Mathe1",
       year: 2025,

@@ -3,8 +3,9 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import Hls from 'hls.js';
 import { AuthService } from '../../auth/auth.service';
 import { ChatMessage, Sender } from '../../shared/interfaces/chat';
+import { environment } from '../../environments/environment';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = environment.apiUrl;
 
 @Injectable({ providedIn: 'root' })
 export class VideoChatService {
@@ -132,7 +133,8 @@ export class VideoChatService {
       this.ws.close();
       this.ws = null;
     }
-    this.ws = new WebSocket(`ws://localhost:8080/ws/${streamingUUID}`);
+    const HOST_AND_PORT = API_URL.replace(/^https?:\/\//, '');
+    this.ws = new WebSocket(`ws://${HOST_AND_PORT}/ws/${streamingUUID}`);
     this.ws.onmessage = (ev) => {
       if (ev.data === 'update' && this.hls) {
         this.hls.startLoad();

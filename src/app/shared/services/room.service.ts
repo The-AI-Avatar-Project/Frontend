@@ -2,6 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from '../../auth/auth.service';
 import {lastValueFrom} from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class RoomService {
   auth:AuthService = inject(AuthService);
 
   createRoom(){
-    const url = 'http://localhost:8080/rooms';
+    const url = `${environment.apiUrl}/rooms`;
     const body = {
       name: "Mathe1",
       year: 2025,
@@ -30,12 +31,12 @@ export class RoomService {
 
 
   getAllRooms(){
-    return this.http.get<any[]>('http://localhost:8080/rooms');
+    return this.http.get<any[]>(`${environment.apiUrl}/rooms`);
   }
 
   async createGroup(): Promise<any> {
     console.log("Creating Room");
-    const apiUrl = `http://localhost:8080/rooms`;
+    const apiUrl = `${environment.apiUrl}/room`;
     const bearertoken = this.auth.getToken();
 
     const headers = new HttpHeaders({

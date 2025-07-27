@@ -2,6 +2,7 @@ import { Semester, SemesterType } from '../../shared/interfaces/courses';
 import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { environment } from '../../environments/environment'
 
 interface ApiCourseResponse {
   path: string;
@@ -35,7 +36,7 @@ export class CourseService {
     this.error.set(null);
 
     this.http
-      .get<ApiCourseResponse[]>('http://localhost:8080/rooms')
+      .get<ApiCourseResponse[]>(`${environment.apiUrl}/rooms`)
       .pipe(takeUntilDestroyed())
       .subscribe({
         next: (response) => {
@@ -53,7 +54,7 @@ export class CourseService {
 
 
   getRooms(){
-    this.http.get('http://localhost:8080/rooms')
+    this.http.get(`${environment.apiUrl}/rooms`)
       .subscribe({
         next: (response) => {
           console.log('Antwort von /rooms', response);

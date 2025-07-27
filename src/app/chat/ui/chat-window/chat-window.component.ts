@@ -3,9 +3,9 @@ import { NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatMessage, Sender } from '../../../shared/interfaces/chat';
 import { MatIconModule } from '@angular/material/icon';
-import { API_URL } from '../../../shared/constants/constants';
 import { PdfDownloadService } from '../../data-access/pdf-download.service';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-chat-window',
@@ -23,7 +23,7 @@ export class ChatWindowComponent {
 
   pdfDownloadService = inject(PdfDownloadService);
 
-  apiUrl = API_URL;
+  apiUrl = environment.apiUrl;
 
   public Sender = Sender;
 

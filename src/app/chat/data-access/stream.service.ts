@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { ChatMessage, ChatMessageResponse, Sender } from '../../shared/interfaces/chat';
-import { API_URL } from '../../shared/constants/constants';
 import { AuthService } from '../../auth/auth.service';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({ providedIn: 'root' })
@@ -29,8 +29,8 @@ export class VideoStreamService {
     if (this.socket) {
       this.socket.close();
     }
-
-    this.socket = new WebSocket('ws://localhost:8080/ws');
+    const HOST_AND_PORT = environment.apiUrl.replace(/^https?:\/\//, '');
+    this.socket = new WebSocket(`ws://${HOST_AND_PORT}/ws`);
 
     this.socket.addEventListener('open', () => {
       console.log('WebSocket connection established');
@@ -108,7 +108,7 @@ this.socket.addEventListener('message', (event) => {
     }
 
     try {
-      const apiUrl = `${API_URL}/ai/text`;
+      const apiUrl = `${environment.apiUrl}/ai/text`;
       const bearertoken = this.authservice.getToken();
        const body = JSON.stringify({
       text: userMessage,
