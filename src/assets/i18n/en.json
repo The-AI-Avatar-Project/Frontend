@@ -6,5 +6,8 @@
   "chat": {
     "sources": "Sources",
     "page": "p."
+  },
+  "footer": {
+    "text": "This application uses artificial intelligence (AI) to automatically answer inquiries and generate videos."
   }
 }

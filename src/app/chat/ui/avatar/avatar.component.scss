@@ -1,7 +1,13 @@
-.avatar{
+.avatar {
   display: flex;
   justify-content: center;
+  position: relative;
 }
 .avatar-video {
   border-radius: 15px;
+}
+.avatar-watermark {
+  position: absolute;
+  top: 0;
+  left: 7px;
 }

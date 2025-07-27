@@ -1,5 +1,18 @@
-.router-wrapper{
+.router-wrapper {
   display: flex;
   justify-content: center;
   background-color: var(--background-color);
+}
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.router-wrapper {
+  flex: 1 0 auto;
+}
+
+app-footer {
+  margin-top: auto;
 }
