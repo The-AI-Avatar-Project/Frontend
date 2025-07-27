@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { ChatWindowComponent } from './ui/chat-window/chat-window.component';
 import { AvatarComponent } from './ui/avatar/avatar.component';
-import { VideoStreamService } from './data-access/stream.service';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service';

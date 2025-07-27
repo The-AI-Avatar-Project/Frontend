@@ -37,11 +37,6 @@
   margin-bottom: 16px;
   word-wrap: break-word;
   line-height: 1.4;
-
-  &:first-of-type{
-
-  padding-top: 0;
-  }
 }
 
 .chat-window-user-message {
@@ -188,4 +183,12 @@
 }
 .as-link:hover {
   color: #0d47a1; /* dunkleres Blau beim Hover */
+}
+
+.chat-references{
+  list-style-type: disc;
+}
+
+.chat-reference-item{
+  margin-left: 20px;
 }

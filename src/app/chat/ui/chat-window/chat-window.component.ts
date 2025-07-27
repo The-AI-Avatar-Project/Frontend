@@ -1,7 +1,21 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  computed,
+  effect,
+  input,
+  output,
+} from '@angular/core';
 import { NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ChatMessage, Sender } from '../../../shared/interfaces/chat';
+import {
+  ChatMessage,
+  ChatMessageDTO,
+  Sender,
+} from '../../../shared/interfaces/chat';
 import { MatIconModule } from '@angular/material/icon';
 import { PdfDownloadService } from '../../data-access/pdf-download.service';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -15,11 +29,40 @@ import { environment } from '../../../environments/environment';
   imports: [MatIconModule, NgClass, FormsModule, TranslocoPipe],
 })
 export class ChatWindowComponent {
-  @Input() chatLog: ChatMessage[] = [];
-  @Input() userInput = '';
-  @Input() loading = false;
-  @Output() userInputChange = new EventEmitter<string>();
-  @Output() sendMessage = new EventEmitter<void>();
+  chatLog = input<ChatMessageDTO[]>([]);
+  userInput = input<string>('');
+  loading = input<boolean>(false);
+
+  userInputChange = output<string>();
+  sendMessage = output<void>();
+
+  constructor() {
+    effect(() => console.log(this.chatLog()));
+    effect(() => console.log(this.chatLogUnified()));
+  }
+
+  chatLogUnified = computed(() => {
+    return this.chatLog().map((chat: ChatMessageDTO) => {
+      let referencesMap = new Map<string, number[]>();
+
+      chat.references?.forEach((ref: string) => {
+        const [page, pageNumber] = ref.split(':');
+        referencesMap.set(page, [
+          ...(referencesMap.get(page) ?? []),
+          Number(pageNumber),
+        ]);
+      });
+
+      return {
+        message: chat.message,
+        sender: chat.sender,
+        references: Array.from(referencesMap, ([page, pageNumbers]) => ({
+          page,
+          pageNumbers,
+        })),
+      };
+    });
+  });
 
   pdfDownloadService = inject(PdfDownloadService);
 

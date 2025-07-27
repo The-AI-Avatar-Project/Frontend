@@ -2,7 +2,11 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import Hls from 'hls.js';
 import { AuthService } from '../../auth/auth.service';
-import { ChatMessage, Sender } from '../../shared/interfaces/chat';
+import {
+  ChatMessage,
+  ChatMessageDTO,
+  Sender,
+} from '../../shared/interfaces/chat';
 import { environment } from '../../environments/environment';
 
 const API_URL = environment.apiUrl;
@@ -11,7 +15,7 @@ const API_URL = environment.apiUrl;
 export class VideoChatService {
   private authService = inject(AuthService);
 
-  private _messages = signal<ChatMessage[]>([]);
+  private _messages = signal<ChatMessageDTO[]>([]);
   private _isStreaming = signal(false);
   private _error = signal<string | null>(null);
   private _playlistUrl = signal<string | null>(null);
