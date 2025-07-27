@@ -2,20 +2,23 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import Hls from 'hls.js';
 import { AuthService } from '../../auth/auth.service';
-import {
-  ChatMessage,
-  ChatMessageDTO,
-  Sender,
-} from '../../shared/interfaces/chat';
+import { ChatMessageDTO, Sender } from '../../shared/interfaces/chat';
 import { environment } from '../../environments/environment';
+import { TranslocoService } from '@jsverse/transloco';
 
 const API_URL = environment.apiUrl;
 
 @Injectable({ providedIn: 'root' })
 export class VideoChatService {
   private authService = inject(AuthService);
+  private transloco = inject(TranslocoService);
 
-  private _messages = signal<ChatMessageDTO[]>([]);
+  private _messages = signal<ChatMessageDTO[]>([
+    {
+      message: this.transloco.translate('chat.initalMessage'),
+      sender: Sender.Bot,
+    },
+  ]);
   private _isStreaming = signal(false);
   private _error = signal<string | null>(null);
   private _playlistUrl = signal<string | null>(null);
@@ -29,7 +32,12 @@ export class VideoChatService {
   private ws: WebSocket | null = null;
 
   reset(): void {
-    this._messages.set([]);
+    this._messages.set([
+      {
+        message: this.transloco.translate('chat.initalMessage'),
+        sender: Sender.Bot,
+      },
+    ]);
     this._isStreaming.set(false);
     this._error.set(null);
     this._playlistUrl.set(null);

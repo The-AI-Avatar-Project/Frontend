@@ -1,9 +1,11 @@
 <div class="chat-container">
   <div class="back-navigation" [routerLink]="['/courses']">
     <mat-icon class="back-icon">arrow_back</mat-icon>
-    <p class="back-label">Return</p>
+    <p class="back-label">{{ "chat.return" | transloco }}</p>
   </div>
-  <h2 class="chat-greeting">Hello, {{ this.firstName() | titlecase }}!</h2>
+  <h2 class="chat-greeting">
+    {{ "chat.hello" | transloco }}, {{ this.firstName() | titlecase }}!
+  </h2>
   <div class="chat-main">
     <app-avatar class="chat-avatar" [posterImage]="posterImage()" />
     <app-chat-window

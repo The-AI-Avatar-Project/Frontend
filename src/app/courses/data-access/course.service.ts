@@ -2,13 +2,13 @@ import { Semester, SemesterType } from '../../shared/interfaces/courses';
 import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { environment } from '../../environments/environment'
+import { environment } from '../../environments/environment';
 
 interface ApiCourseResponse {
   path: string;
   name: string;
   attributes: {
-    [key: string]: string[]; // Accept any attribute key
+    [key: string]: string[];
   };
 }
 
@@ -21,6 +21,7 @@ export class CourseService {
   semesters = signal<Semester[]>([]);
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
+
   semesterList = computed(() =>
     Array.from(
       new Set(this.semesters().map((s) => s.year + s.semesterType))
@@ -52,19 +53,6 @@ export class CourseService {
       });
   }
 
-
-  getRooms(){
-    this.http.get(`${environment.apiUrl}/rooms`)
-      .subscribe({
-        next: (response) => {
-          console.log('Antwort von /rooms', response);
-        },
-        error: (err) => {
-          console.log("Fehler beim Laden der Räume", err)
-        }
-      })
-  }
-
   private parseApiResponse(courses: ApiCourseResponse[]): Semester[] {
     const semesterMap = new Map<string, Semester>();
 
@@ -94,17 +82,6 @@ export class CourseService {
         image: course.attributes.icon?.[0],
       });
     }
-    console.log(semesterMap.values())
     return Array.from(semesterMap.values());
   }
-
-
-
-
-
-
-
-
-
-
 }

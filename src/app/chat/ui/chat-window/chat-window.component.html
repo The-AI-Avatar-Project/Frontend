@@ -10,7 +10,7 @@
       "
     >
       {{ message.message }}
-      @if(message.sender === Sender.Bot && message.references){
+      @if(message.sender === Sender.Bot && message.references.length > 0){
       <br />
       <br />
       <span>{{ "chat.sources" | transloco }}: </span>

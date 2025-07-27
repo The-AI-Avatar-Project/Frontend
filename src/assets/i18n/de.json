@@ -5,9 +5,15 @@
   },
   "chat": {
     "sources": "Quellen",
-    "page": "s."
+    "page": "s.",
+    "initalMessage": "Hey, wie kann ich dir helfen?",
+    "return": "Zurück",
+    "hello": "Hallo"
   },
   "footer": {
     "text": "Diese Anwendung nutzt künstliche Intelligenz (KI) zur automatisierten Beantwortung von Anfragen und zur Generierung von Videos."
+  },
+    "navbar": {
+    "courses": "Kurse"
   }
 }
