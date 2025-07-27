@@ -1,25 +1,41 @@
 <div class="card">
-
-<p-menubar [model]="items">
-  <ng-template #start>
-
-  </ng-template>
-  <ng-template #item let-item let-root="root">
-    <a pRipple class="flex items-center p-menubar-item-link">
-      <span>{{ item.label }}</span>
-    </a>
-  </ng-template>
-  <ng-template #end>
-    <div class="flex items-center">
-      <div class="flex items-center gap-2">
-        <p-selectbutton [options]="stateOptions" [allowEmpty]="false" [(ngModel)]="value" (ngModelChange)="this.LanguageService.switchLanguage(value);setUserLanguage(value)" ptionLabel="label" optionValue="value" aria-labelledby="basic" />
-        <p>{{username}}</p>
-        <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" (click)="menu.toggle($event)" />
-      <p-menu #menu [model]="userDropdownItems" [popup]="true" />
+  <p-menubar [model]="items">
+    <ng-template #start>
+      <span
+        class="font-bold text-xl tracking-wide text-primary"
+        style="font-size: 22px"
+      >
+        <span style="color: var(--primary-color)">Ai</span>vatar
+      </span>
+    </ng-template>
+    <ng-template #item let-item let-root="root">
+      <a pRipple class="flex items-center p-menubar-item-link">
+        <span>{{ item.label }}</span>
+      </a>
+    </ng-template>
+    <ng-template #end>
+      <div class="flex items-center">
+        <div class="flex items-center gap-2">
+          <p-selectbutton
+            [options]="stateOptions"
+            [allowEmpty]="false"
+            [(ngModel)]="value"
+            (ngModelChange)="
+              this.LanguageService.switchLanguage(value); setUserLanguage(value)
+            "
+            optionLabel="label"
+            optionValue="value"
+            aria-labelledby="basic"
+          />
+          <p>{{ username }}</p>
+          <p-avatar
+            image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+            shape="circle"
+            (click)="menu.toggle($event)"
+          />
+          <p-menu #menu [model]="userDropdownItems" [popup]="true" />
+        </div>
       </div>
-
-    </div>
-  </ng-template>
-</p-menubar>
+    </ng-template>
+  </p-menubar>
 </div>
-

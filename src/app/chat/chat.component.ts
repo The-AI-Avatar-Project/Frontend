@@ -11,8 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import { VideoChatService } from './data-access/newStream.service';
+import { VideoChatService } from './data-access/stream.service';
 import { AudioRecorderService } from './data-access/audio-recorder.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-chat',
@@ -23,6 +24,7 @@ import { AudioRecorderService } from './data-access/audio-recorder.service';
     MatIconModule,
     RouterModule,
     TitleCasePipe,
+    TranslocoPipe,
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
@@ -49,6 +51,11 @@ export class ChatComponent {
   posterImage = signal<string>('dummyprof1.png');
 
   ngOnInit() {
+    this.route.params.subscribe((params) => {
+      // Wird bei jedem Param-Wechsel aufgerufen!
+      this.streamService.reset();
+      // Optional: weitere Logik, z.B. Chat laden
+    });
     this.authService.getFirstName().then((n) => this.firstName.set(n));
     this.route.paramMap.subscribe((params) => {
       const rp = params.get('roomPath')!;
