@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from '../../auth/auth.service';
-import {lastValueFrom} from 'rxjs';
+import {lastValueFrom, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,31 +9,52 @@ import {lastValueFrom} from 'rxjs';
 export class RoomService {
 
   http: HttpClient = inject(HttpClient);
-  auth:AuthService = inject(AuthService);
+  auth: AuthService = inject(AuthService);
 
-  createRoom(){
+  createRoom(name: string, year: number, semester: string, icon: string) {
     const url = 'http://localhost:8080/rooms';
     const body = {
-      name: "Mathe1",
-      year: 2025,
-      semester: "SoMe",
-      icon: "5"
+      name: name,
+      year: year,
+      semester: semester,
+      icon: icon
     }
     const token = this.auth.getToken();
 
+    console.log(body)
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http.post(url, body, { headers });
+    return this.http.post(url, body, {headers});
   }
 
 
-  getAllRooms(){
+  getAllRooms() {
     return this.http.get<any[]>('http://localhost:8080/rooms');
   }
 
-  async createGroup(): Promise<any> {
+  private readonly apiUrl = 'http://localhost:8080/users';
+
+
+  addUsersToGroup(groupId: string, userIds: string[]): Observable<void> {
+    const bearertoken = this.auth.getToken();
+
+    const payload = {
+      userIds: userIds,
+      groupId: groupId
+    };
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${bearertoken}`,
+      "Content-Type": "application/json"
+    });
+
+    return this.http.post<void>(this.apiUrl, payload, {headers});
+  }
+
+
+  async createGroup(name: string, year: number, semester: string, icon: string): Promise<any> {
     console.log("Creating Room");
     const apiUrl = `http://localhost:8080/rooms`;
     const bearertoken = this.auth.getToken();
@@ -44,15 +65,15 @@ export class RoomService {
     });
 
     const body = {
-      name: "Okan3",
-      year: 2026,
-      semester: "SoSe",
-      icon: "TESTING.PNG"
+      name: name,
+      year: year,
+      semester: semester,
+      icon: icon
     };
 
     try {
       const response = await lastValueFrom(
-        this.http.post(apiUrl, body, { headers })
+        this.http.post(apiUrl, body, {headers})
       );
 
       console.log("Room created:", response);
@@ -63,11 +84,6 @@ export class RoomService {
       throw err;
     }
   }
-
-
-
-
-
 
 
 }

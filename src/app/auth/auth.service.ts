@@ -53,8 +53,14 @@ export class AuthService {
     return this.keycloak.loadUserProfile().then((profile) => profile.lastName);
   }
 
+  getUserId(): string | undefined {
+    return this.keycloak.tokenParsed?.sub;
+  }
+
   getUserGroups(): string[] {
     const groups = this.keycloak.tokenParsed?.['groups'];
     return Array.isArray(groups) ? groups : [];
   }
+
+
 }

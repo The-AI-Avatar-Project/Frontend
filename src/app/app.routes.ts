@@ -20,6 +20,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./settings/settings.component').then((m) => m.SettingsComponent),
   },
+  {
+    path: 'avatar',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./avatar/avatar.component').then((m) => m.AvatarComponent),
+  },
   { path: '', redirectTo: 'courses', pathMatch: 'full' },
   { path: '**', redirectTo: 'courses' },
 ];

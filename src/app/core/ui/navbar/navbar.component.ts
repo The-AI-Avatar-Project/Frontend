@@ -87,9 +87,14 @@ export class NavbarComponent {
         label: 'Options',
         items: [
           {
-            label: 'Settings',
+            label: 'Einstellungen',
             icon: 'pi pi-cog',
             command: () => this.routingService.settings()
+          },
+          {
+            label: 'Dein Avatar',
+            icon: 'pi pi-user',
+            command: () => this.routingService.avatar()
           },
           {
             label: 'Logout',

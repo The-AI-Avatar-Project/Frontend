@@ -1,7 +1,7 @@
 import {Component, effect, inject, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TableModule} from 'primeng/table';
-import {newCourse, SCourse} from '../shared/interfaces/courses';
+import {Course, newCourse} from '../shared/interfaces/courses';
 import {NgForOf, NgIf} from '@angular/common';
 import {Button} from 'primeng/button';
 import {InputText} from 'primeng/inputtext';
@@ -15,6 +15,7 @@ import {User} from '../shared/interfaces/user';
 import {CourseService} from '../courses/data-access/course.service';
 import {RoomService} from '../shared/services/room.service';
 import {AuthService} from '../auth/auth.service';
+import {Select} from 'primeng/select';
 
 interface Column {
   field: string;
@@ -26,6 +27,10 @@ interface FileEntry {
   code: string;
 }
 
+interface RoomIcon {
+  path: string;
+  name: string;
+}
 
 
 @Component({
@@ -46,25 +51,13 @@ interface FileEntry {
     FileUpload,
     NgIf,
     Listbox,
-    MultiSelectModule
+    MultiSelectModule,
+    Select
   ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent {
-  cols: Column[] = [];
-
-  addModalVisible = false;
-  editModalVisible = false;
-  deleteModalVisible = false;
-  inviteModalVisible = false;
-
-  selectedCourse: newCourse | null = null;
-  newCourse: newCourse = {id: '', courseID: '', name: ''};
-  editedCourse: newCourse = {id: '', courseID: '', name: ''};
-
-  // Signal accessor for the courses
-  courses = SCourse;
 
 
   protected userService: UserService = inject(UserService);
@@ -72,9 +65,87 @@ export class SettingsComponent {
   protected roomService: RoomService = inject(RoomService);
   protected auth: AuthService = inject(AuthService);
 
-  users!: User[];
 
-  selectedUser?: User[];
+  cols: Column[] = [];
+
+  addModalVisible = false;
+  editModalVisible = false;
+  deleteModalVisible = false;
+  inviteModalVisible = false;
+
+
+  courseModalVisible = false;
+
+  step1Value = 1;
+  step2Value = 2;
+
+  selectedCourse: newCourse | null = null;
+  newCourse: newCourse = {name: ''};
+  editedCourse: newCourse = {name: ''};
+
+  users!: User[];
+  selectedUser: User[] = []
+
+  icons!: RoomIcon[] | undefined;
+  selectedIcons!: RoomIcon | undefined;
+
+  filteredCourses!: Course[];
+  selectedRoomId: string = ""
+
+
+  ngOnInit() {
+
+
+    this.cols = [
+      {field: 'name', header: 'Vorlesung'},
+      {field: 'id', header: 'Id'},
+    ];
+
+
+    this.icons = [
+      {name: 'Naturwissenschaft', path: 'course_icon_1.png'},
+      {name: 'Soziologie', path: 'course_icon_2.png'},
+      {name: 'Psychologie', path: 'course_icon_3.png'},
+      {name: 'Englisch', path: 'course_icon_4.png'},
+      {name: 'Software Engineering', path: 'course_icon_5.png'}
+    ];
+
+    const userId = this.auth.getUserId();
+
+    this.roomService.getAllRooms().subscribe(rooms => {
+      const ownedGroups = rooms.filter(
+        (room: any) => room.attributes?.owner?.[0] === userId
+      );
+
+      console.log('Groups owned by current user:', ownedGroups);
+
+      this.filteredCourses = ownedGroups; // 👈 Store it for the table
+    });
+
+
+  }
+
+
+  addUsersToRoom() {
+
+    const groupID = this.selectedRoomId;
+    const userIDs: any = this.selectedUser.map(user => user.id);
+
+    this.roomService.addUsersToGroup(groupID, userIDs).subscribe({
+      next: () => console.log('Users added!'),
+      error: err => console.error('Error:', err)
+    });
+    this.selectedUser = []
+    this.inviteModalVisible = false;
+  }
+
+
+  openCourseModal() {
+    this.step1Value = 1;
+    this.courseModalVisible = true;
+  }
+
+
 
 
   showAllRooms() {
@@ -89,31 +160,12 @@ export class SettingsComponent {
   }
 
 
-
-  ngOnInit() {
-    this.cols = [
-      {field: 'courseID', header: 'Kurs Bezeichnung'},
-      {field: 'name', header: 'Vorlesung'},
-    ];
-
-    this.roomService.createGroup();
-
-  }
-
-
   showCourse(course: newCourse) {
     console.log('Show:', course);
   }
 
   openAddModal() {
-    this.newCourse = {id: this.generateId(), courseID: '', name: ''};
     this.addModalVisible = true;
-  }
-
-
-  addCourse() {
-    SCourse.update(current => [...current, this.newCourse]);
-    this.addModalVisible = false;
   }
 
   openEditModal(course: newCourse) {
@@ -121,120 +173,40 @@ export class SettingsComponent {
     this.editModalVisible = true;
   }
 
-  openInviteModal(course: newCourse) {
+  openInviteModal(course: any) {
+    this.inviteModalVisible = true
+    this.selectedRoomId = course.id
 
     this.userService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
         console.log('Antwort von /users:', this.users);
       },
-      error: (err) => { console.error('Fehler beim Laden der Benutzer:', err);
+      error: (err) => {
+        console.error('Fehler beim Laden der Benutzer:', err);
       }
     });
 
     this.inviteModalVisible = true;
   }
 
-  inviteUser() {
-    this.inviteModalVisible = false;
-
-    this.selectedUser?.forEach(user => {
-      console.log(user.email)
-    })
-
-    this.selectedUser = []
-
-  }
-
-
-  updateCourse() {
-    SCourse.update(current =>
-      current.map(c => (c.id === this.editedCourse.id ? this.editedCourse : c))
-    );
-    this.editModalVisible = false;
-  }
 
   openDeleteModal(course: newCourse) {
     this.selectedCourse = course;
     this.deleteModalVisible = true;
   }
 
-  deleteCourse() {
-    if (!this.selectedCourse) return;
-    SCourse.update(current =>
-      current.filter(c => c.id !== this.selectedCourse!.id)
-    );
-    this.deleteModalVisible = false;
-    this.selectedCourse = null;
-  }
-
-  generateId(): string {
-    return Date.now().toString();
-  }
-
-
-/// UPLOAD IMAGE
-  previewUrl: string | ArrayBuffer | null = null;
-
-  // Fired before upload, when a file is selected
-  onImageSelect(event: any): void {
-    const file = event.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.previewUrl = reader.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  onBasicUploadAuto(event: any): void {
-    console.log('Upload complete', event);
-    // Optionally clear preview after upload or keep it
-  }
-
-  /// UPLOAD IMAGE
-
-
-  //RECORD AUDIO
-
-  private mediaRecorder!: MediaRecorder;
-  private audioChunks: Blob[] = [];
-
-  audioUrl: string | null = null;
-  isRecording = false;
-
-  async startRecording() {
-    this.audioUrl = null; // Reset previous recording
-
-    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-    this.mediaRecorder = new MediaRecorder(stream);
-    this.audioChunks = [];
-
-    this.mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        this.audioChunks.push(event.data);
-      }
-    };
-
-    this.mediaRecorder.onstop = () => {
-      const audioBlob = new Blob(this.audioChunks, {type: 'audio/webm'});
-      this.audioUrl = URL.createObjectURL(audioBlob);
-    };
-
-    this.mediaRecorder.start();
-    this.isRecording = true;
-  }
-
-  stopRecording() {
-    this.mediaRecorder.stop();
-    this.isRecording = false;
-  }
-
-  //RECORD AUDIO
+  // deleteCourse() {
+  //   if (!this.selectedCourse) return;
+  //   SCourse.update(current =>
+  //     current.filter(c => c.id !== this.selectedCourse!.id)
+  //   );
+  //   this.deleteModalVisible = false;
+  //   this.selectedCourse = null;
+  // }
 
 
   // UPLOAD FILES AND SHOW THEM
-
-
   // Speichert die echten File-Objekte mit Dateiname als Schlüssel
   fileBlobMap = new Map<string, File>();
 

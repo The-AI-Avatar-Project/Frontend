@@ -21,6 +21,9 @@ export class RoutingService {
   settings(){
     this.router.navigate(['/settings']);
   }
+  avatar(){
+    this.router.navigate(['/avatar']);
+  }
 
   chat(){
     this.router.navigate(['/chat']);
