@@ -1,6 +1,6 @@
 <div class="chat-window">
   <div class="chat-display">
-    @for (message of chatLog; track message) {
+    @for (message of chatLogUnified(); track message) {
     <div
       class="chat-window-message"
       [ngClass]="
@@ -10,19 +10,25 @@
       "
     >
       {{ message.message }}
-      @if(message.sender === Sender.Bot && message.references){ 
-        <br>
-        <span>{{ "chat.sources" | transloco }} </span>
-        <br>
-      @for (reference of message.references; track reference) {
-        <button class="as-link" (click)="download(reference)">
-          {{ reference.split(':')[0] }} {{ "chat.page" | transloco }} {{ reference.split(':')[1] }}
-        </button>
-      }
-        
+      @if(message.sender === Sender.Bot && message.references){
+      <br />
+      <br />
+      <span>{{ "chat.sources" | transloco }}: </span>
+      <br />
+      <ul class="chat-references">
+        @for (reference of message.references; track reference) {
+        <li class="chat-reference-item">
+          <button class="as-link" (click)="download(reference.page)">
+            {{ reference.page.split("/").at(-1) }}
+          </button>
+          {{ "chat.page" | transloco }}
+          {{ reference.pageNumbers.join(",") }}
+        </li>
+        }
+      </ul>
       }
     </div>
-    } @if (loading) {
+    } @if (loading()) {
     <div class="loader"></div>
     }
   </div>
@@ -33,14 +39,14 @@
         class="chat-input"
         type="text"
         placeholder="Type here ..."
-        [value]="userInput"
+        [value]="userInput()"
         (input)="onInputChange($event)"
         (keyup.enter)="onSend()"
       />
       <button
         class="chat-input-button"
         (click)="onSend()"
-        [disabled]="loading || !userInput.trim()"
+        [disabled]="loading || !userInput().trim()"
       >
         <mat-icon fontIcon="arrow_upward"></mat-icon>
       </button>

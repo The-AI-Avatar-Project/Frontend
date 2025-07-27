@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, ElementRef, input, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-avatar',
@@ -7,6 +7,7 @@ import { Component, input } from '@angular/core';
   styleUrl: './avatar.component.scss',
 })
 export class AvatarComponent {
-  readonly videoUrl = input<string | null>();
   readonly posterImage = input<string>();
+  @ViewChild('videoPlayer', { static: true })
+  videoPlayer!: ElementRef<HTMLVideoElement>;
 }
