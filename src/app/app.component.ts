@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './core/ui/navbar/navbar.component';
-import { TranslocoModule, TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { FooterComponent } from './core/ui/footer/footer.component';
 
 @Component({
@@ -12,4 +12,8 @@ import { FooterComponent } from './core/ui/footer/footer.component';
 })
 export class AppComponent {
   title = 'frontend';
+
+
+
+
 }

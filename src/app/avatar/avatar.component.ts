@@ -8,6 +8,7 @@ import {AudioService} from '../shared/services/audio.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {lastValueFrom} from 'rxjs';
 import {AuthService} from '../auth/auth.service';
+import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-avatar',
@@ -19,7 +20,8 @@ import {AuthService} from '../auth/auth.service';
     StepPanels,
     Stepper,
     NgIf,
-    FileUpload
+    FileUpload,
+    TranslocoPipe
   ],
   templateUrl: './avatar.component.html',
   styleUrl: './avatar.component.scss'
@@ -30,6 +32,7 @@ export class AvatarComponent {
   protected audioService = inject(AudioService);
   protected auth = inject(AuthService);
   protected http: HttpClient = inject(HttpClient);
+  protected translocoService = inject(TranslocoService)
 
   //File BASE64
   imageURL: string | ArrayBuffer | null = null;

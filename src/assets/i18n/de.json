@@ -1,19 +1,57 @@
 {
   "courses": {
     "title": "Verfügbare Kurse",
-    "search": "Suche..."
+    "search": "Suchen..."
   },
   "chat": {
     "sources": "Quellen",
-    "page": "s.",
-    "initalMessage": "Hey, wie kann ich dir helfen?",
+    "page": "S.",
+    "initalMessage": "Hallo, wie kann ich Ihnen helfen?",
     "return": "Zurück",
     "hello": "Hallo"
   },
   "footer": {
-    "text": "Diese Anwendung nutzt künstliche Intelligenz (KI) zur automatisierten Beantwortung von Anfragen und zur Generierung von Videos."
+    "text": "Diese Anwendung nutzt künstliche Intelligenz (KI), um Anfragen automatisch zu beantworten und Videos zu erstellen."
   },
-    "navbar": {
-    "courses": "Kurse"
+  "avatar": {
+    "uploadImage": "Bild Hochladen",
+    "recordAudio": "Stimme aufzeichnen",
+    "startRecording": "Aufnahme Starten",
+    "stop": "Stopp",
+    "createAvatar": "Erstelle deinen Avatar",
+    "next": "Weiter",
+    "back": "Zurück",
+    "browse": "Hochladen"
+  },
+  "settings": {
+    "addCourses": "Kurs hinzufügen",
+    "createRoom": "Raum erstellen",
+    "fname": "Name",
+    "lname": "Nachname",
+    "mail": "Email",
+    "year": "Jahr",
+    "semester": "Semester",
+    "icon": "Icon",
+    "lecture": "Vorlesung",
+    "actions": "Aktionen"
+  },
+  "navbar": {
+    "courses": "Kurse",
+    "options": "Optionen",
+    "settings": "Einstellungen",
+    "avatar": "Dein Avatar",
+    "logOut": "Abmelden"
+  },
+  "actions": {
+    "invite": "Einladen",
+    "uploadReference": "Referenz hochladen",
+    "cancel": "Abbrechen",
+    "choose": "Dateien Auswählen",
+    "upload": "Hochladen",
+    "addUser": "Benutzer hinzufügen"
+  },
+  "modal": {
+    "pdfUploadHeader": "PDF hochladen",
+    "inviteHeader": "Einladen"
   }
 }

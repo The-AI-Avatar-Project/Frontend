@@ -1,11 +1,8 @@
-<p>avatar works!</p>
-
-
 <div class="card flex justify-center">
   <p-stepper [(value)]="step1Value">
     <p-step-list>
-      <p-step [value]="1">Bild hochladen</p-step>
-      <p-step [value]="2">Audio aufnehmen</p-step>
+      <p-step [value]="1">{{ 'avatar.uploadImage' | transloco}}</p-step>
+      <p-step [value]="2">{{ 'avatar.recordAudio' | transloco}}</p-step>
     </p-step-list>
     <p-step-panels>
       <p-step-panel [value]="1">
@@ -23,7 +20,7 @@
                               (onSelect)="onImageSelect($event)"
                               (onUpload)="onBasicUploadAuto($event)"
                               [auto]="true"
-                              chooseLabel="Browse"
+                              chooseLabel="{{ 'avatar.browse' | transloco}}"
 
                 />
               </div>
@@ -42,8 +39,7 @@
             </div>
           </div>
           <div class="flex !pt-6 justify-between">
-            <p-button label="Log Image" icon="pi pi-image" iconPos="right" (click)="showImage()"/>
-            <p-button label="Next" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)"/>
+            <p-button label="{{ 'avatar.next' | transloco}}" icon="pi pi-arrow-right" iconPos="right" (onClick)="activateCallback(2)"/>
           </div>
         </ng-template>
       </p-step-panel>
@@ -57,9 +53,9 @@
             >
               <div class="audio ">
 
-                <p-button class="!p-3" (click)="startRecording()" label="️Start Aufnahme" severity="primary"
+                <p-button class="!p-3" (click)="startRecording()" label="{{ 'avatar.startRecording' | transloco}}" severity="primary"
                           icon="pi pi-microphone" [disabled]="isRecording"/>
-                <p-button class="!p-3" (click)="stopRecording()" label="Stop" severity="primary"
+                <p-button class="!p-3" (click)="stopRecording()" label="{{ 'avatar.stop' | transloco}}" severity="primary"
                           icon="pi pi-pause-circle" [disabled]="!isRecording"/>
 
 
@@ -71,19 +67,14 @@
             </div>
           </div>
           <div class="flex !pt-6 justify-between">
-            <p-button label="Back" severity="secondary" icon="pi pi-arrow-left" (onClick)="activateCallback(1)"/>
-            <p-button label="Avatar erstellen" icon="pi pi-user-plus" (click)="createAvatar()"></p-button>
+            <p-button label="{{ 'avatar.back' | transloco}}" severity="secondary" icon="pi pi-arrow-left" (onClick)="activateCallback(1)"/>
+            <p-button label="{{ 'avatar.createAvatar' | transloco}}" icon="pi pi-user-plus" (click)="createAvatar()"></p-button>
           </div>
         </ng-template>
       </p-step-panel>
 
     </p-step-panels>
   </p-stepper>
-</div>
-
-
-<div class="flex gap-2 mt-4 justify-start !mt-2">
-
 </div>
 
 

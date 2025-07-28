@@ -6,9 +6,7 @@ import {NgForOf, NgIf} from '@angular/common';
 import {Button} from 'primeng/button';
 import {InputText} from 'primeng/inputtext';
 import {Dialog} from 'primeng/dialog';
-import {Step, StepList, StepPanel, StepPanels, Stepper} from 'primeng/stepper';
-import {FileUploadModule } from 'primeng/fileupload';
-import {Listbox} from 'primeng/listbox';
+import {FileUploadModule} from 'primeng/fileupload';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {UserService} from '../shared/services/user.service';
 import {User} from '../shared/interfaces/user';
@@ -18,6 +16,8 @@ import {AuthService} from '../auth/auth.service';
 import {Select} from 'primeng/select';
 import {MessageService} from 'primeng/api';
 import {Toast} from 'primeng/toast';
+import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {lastValueFrom} from 'rxjs';
 
 interface Column {
   field: string;
@@ -45,17 +45,12 @@ interface RoomIcon {
     Button,
     Dialog,
     InputText,
-    Stepper,
-    StepList,
-    Step,
-    StepPanels,
-    StepPanel,
     FileUploadModule,
     NgIf,
-    Listbox,
     MultiSelectModule,
     Select,
-    Toast
+    Toast,
+    TranslocoPipe
   ],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
@@ -67,7 +62,8 @@ export class SettingsComponent {
   protected courseService: CourseService = inject(CourseService);
   protected roomService: RoomService = inject(RoomService);
   protected auth: AuthService = inject(AuthService);
-  protected messageService : MessageService = inject(MessageService);
+  protected messageService: MessageService = inject(MessageService);
+  protected translocoService = inject(TranslocoService)
 
 
   cols: Column[] = [];
@@ -96,15 +92,7 @@ export class SettingsComponent {
   filteredCourses!: Course[];
   selectedRoomId: string = ""
 
-
-  ngOnInit() {
-
-
-    this.cols = [
-      {field: 'name', header: 'Vorlesung'},
-    ];
-
-
+  translateItems() {
     this.icons = [
       {name: 'Naturwissenschaft', path: 'course_icon_1.png'},
       {name: 'Soziologie', path: 'course_icon_2.png'},
@@ -113,16 +101,31 @@ export class SettingsComponent {
       {name: 'Software Engineering', path: 'course_icon_5.png'}
     ];
 
+    this.translocoService.selectTranslate('settings.lecture').subscribe(translated => {
+      this.cols = [
+        { field: 'name', header: translated }
+      ];
+    });
+
+  }
+
+  async ngOnInit() {
+
+    await lastValueFrom(this.translocoService.load(this.translocoService.getActiveLang()));
+
+    console.log(this.translocoService.translate('settings.lecture'))
+
+    this.translocoService.langChanges$.subscribe(() => {
+      this.translateItems()
+    })
+
+
     const userId = this.auth.getUserId();
 
     this.roomService.getAllRooms().subscribe(rooms => {
-      const ownedGroups = rooms.filter(
+      this.filteredCourses = rooms.filter(
         (room: any) => room.attributes?.owner?.[0] === userId
-      );
-
-      console.log('Groups owned by current user:', ownedGroups);
-
-      this.filteredCourses = ownedGroups; // 👈 Store it for the table
+      ); // 👈 Store it for the table
     });
 
 
@@ -175,7 +178,6 @@ export class SettingsComponent {
 
     this.inviteModalVisible = true;
   }
-
 
 
   // UPLOAD FILES AND SHOW THEM

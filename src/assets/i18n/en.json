@@ -13,7 +13,45 @@
   "footer": {
     "text": "This application uses artificial intelligence (AI) to automatically answer inquiries and generate videos."
   },
-    "navbar": {
-    "courses": "Courses"
+  "avatar": {
+    "uploadImage": "Upload Image",
+    "recordAudio": "Record your Voice",
+    "startRecording": "Start Recording",
+    "stop": "Stop",
+    "createAvatar": "Create your Avatar",
+    "next": "Next",
+    "back": "Back",
+    "browse": "Browse"
+  },
+  "settings": {
+    "addCourses": "Add Course",
+    "createRoom": "Create Room",
+    "fname": "First Name",
+    "lname": "Last Name",
+    "year": "Year",
+    "mail": "Email",
+    "semester": "Semester",
+    "icon": "Icon",
+    "lecture": "Lecture",
+    "actions": "Actions"
+  },
+  "navbar": {
+    "courses": "Courses",
+    "options": "Options",
+    "settings": "Settings",
+    "avatar": "Your Avatar",
+    "logOut": "Log Out"
+  },
+  "actions": {
+    "invite": "Invite",
+    "uploadReference": "Upload Reference",
+    "cancel": "Cancel",
+    "choose": "Choose a File",
+    "upload": "Upload",
+    "addUser": "Add User"
+  },
+  "modal": {
+    "pdfUploadHeader": "Upload PDF",
+    "inviteHeader": "Invite"
   }
 }

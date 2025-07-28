@@ -1,5 +1,5 @@
 <div class="flex gap-2 mt-4 justify-start !mt-2">
-  <p-button label="Kurs Hinzufügen" icon="pi pi-plus" (click)="openCourseModal()"></p-button>
+  <p-button label='{{ "settings.addCourses" | transloco }}' icon="pi pi-plus" (click)="openCourseModal()"></p-button>
 </div>
 
 <div class="card !pt-5">
@@ -14,7 +14,7 @@
     <ng-template pTemplate="header" let-columns>
       <tr>
         <th *ngFor="let col of columns">{{ col.header }}</th>
-        <th colspan="2">Actions</th>
+        <th colspan="2">{{ 'settings.actions' | transloco }}</th>
       </tr>
     </ng-template>
 
@@ -22,8 +22,8 @@
       <tr>
         <td *ngFor="let col of columns">{{ rowData[col.field] }}</td>
         <td class="flex gap-5">
-          <p-button label="Invite" (click)="openInviteModal(rowData)"></p-button>
-          <p-button label="Referenz Hochladen" (click)="openReferenceModal(rowData)"></p-button>
+          <p-button label="{{ 'actions.invite' | transloco }}" (click)="openInviteModal(rowData)"></p-button>
+          <p-button label="{{ 'actions.uploadReference' | transloco }}" (click)="openReferenceModal(rowData)"></p-button>
         </td>
       </tr>
     </ng-template>
@@ -31,116 +31,58 @@
 </div>
 
 
-<p-dialog header="Kurs hinzufügen" [(visible)]="courseModalVisible" [modal]="true"
+<p-dialog header="{{'settings.addCourses' | transloco}}" [(visible)]="courseModalVisible" [modal]="true"
           [style]="{ width: '50vw',height:'100vh' }" [dismissableMask]="true">
   <div class="card flex justify-center">
-    <p-stepper [(value)]="step1Value">
-      <p-step-list>
-        <p-step [value]="1">Raum anlegen</p-step>
-        <p-step [value]="2">Dateien hochladen</p-step>
-      </p-step-list>
-      <p-step-panels>
-        <p-step-panel [value]="1">
-          <ng-template #content let-activateCallback="activateCallback">
-            <div class="flex flex-col gap-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex flex-col">
-                  <label for="name" class="mb-1 font-medium">Name</label>
-                  <input id="name" type="text" pInputText [(ngModel)]="newCourse.name"/>
-                </div>
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col">
+          <label for="name" class="mb-1 font-medium">Name</label>
+          <input id="name" type="text" pInputText [(ngModel)]="newCourse.name"/>
+        </div>
 
-                <div class="flex flex-col">
-                  <label for="year" class="mb-1 font-medium">Jahr</label>
-                  <input id="year" type="number" pInputText [(ngModel)]="newCourse.year"/>
-                </div>
+        <div class="flex flex-col">
+          <label for="year" class="mb-1 font-medium">Jahr</label>
+          <input id="year" type="number" pInputText [(ngModel)]="newCourse.year"/>
+        </div>
 
-                <div class="flex flex-col">
-                  <label for="semester" class="mb-1 font-medium">Semester</label>
-                  <input id="semester" type="text" pInputText [(ngModel)]="newCourse.semester"/>
-                </div>
+        <div class="flex flex-col">
+          <label for="semester" class="mb-1 font-medium">Semester</label>
+          <input id="semester" type="text" pInputText [(ngModel)]="newCourse.semester"/>
+        </div>
 
-                <div class="flex flex-col">
-                  <label for="icon" class="mb-1 font-medium">Icon</label>
-                  <p-select
-                    [options]="icons"
-                    [(ngModel)]="selectedIcons"
-                    optionLabel="name"
-                    placeholder="Icon auswählen"
-                    class="w-full"
-                  >
-                    <!-- Selected item -->
-                    <ng-template #selectedItem let-selectedOption>
-                      <div class="flex items-center gap-2" *ngIf="selectedOption">
-                        <img [src]="selectedOption.path" style="width: 18px" alt="icons"/>
-                        <div>{{ selectedOption.name }}</div>
-                      </div>
-                    </ng-template>
-
-                    <!-- Dropdown item -->
-                    <ng-template let-icon pTemplate="item">
-                      <div class="flex items-center gap-2">
-                        <img [src]="icon.path" alt="{{icon.name}}" style="width: 20px; height: 20px;"/>
-                        <div>{{ icon.name }}</div>
-                      </div>
-                    </ng-template>
-                  </p-select>
-                </div>
+        <div class="flex flex-col">
+          <label for="icon" class="mb-1 font-medium">Icon</label>
+          <p-select
+            [options]="icons"
+            [(ngModel)]="selectedIcons"
+            optionLabel="name"
+            placeholder="Icon auswählen"
+            class="w-full"
+          >
+            <!-- Selected item -->
+            <ng-template #selectedItem let-selectedOption>
+              <div class="flex items-center gap-2" *ngIf="selectedOption">
+                <img [src]="selectedOption.path" style="width: 18px" alt="icons"/>
+                <div>{{ selectedOption.name }}</div>
               </div>
-              <p-button
-                label="Create Room"
-                (onClick)="roomService.createGroup(newCourse.name, newCourse.year, newCourse.semester, selectedIcons!.name)"></p-button>
+            </ng-template>
 
-
-              <div class="flex justify-end pt-4">
-                <p-button label="Next" (onClick)="activateCallback(2)"></p-button>
+            <!-- Dropdown item -->
+            <ng-template let-icon pTemplate="item">
+              <div class="flex items-center gap-2">
+                <img [src]="icon.path" alt="{{icon.name}}" style="width: 20px; height: 20px;"/>
+                <div>{{ icon.name }}</div>
               </div>
-            </div>
-          </ng-template>
-        </p-step-panel>
-        <p-step-panel [value]="2">
-          <ng-template #content>
-            <div class="flex flex-col h-auto">
-              <div
-                class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 0 flex-auto flex justify-center items-center font-medium"
-              >
-                <div class="card">
+            </ng-template>
+          </p-select>
+        </div>
+      </div>
+      <p-button
+        label="{{'settings.addCourses' | transloco}}"
+        (onClick)="roomService.createGroup(newCourse.name, newCourse.year, newCourse.semester, selectedIcons!.name)"></p-button>
 
-                  <p-fileupload
-                    #uploader
-                    name="demo[]"
-                    [customUpload]="true"
-                    [multiple]="true"
-                    accept="image/*,application/pdf"
-                    maxFileSize="100000000"
-                    mode="advanced"
-                    (uploadHandler)="onMockUpload($event, uploader)"
-                  >
-                    <ng-template pTemplate="empty">
-                      <div>Drag and drop files here to mock upload.</div>
-                    </ng-template>
-                  </p-fileupload>
-                </div>
-
-                <!-- Listbox für Dateinamen -->
-                <div class="card flex justify-center mt-4">
-                  <p-listbox
-                    [options]="files()"
-                    [(ngModel)]="selectedFile"
-                    optionLabel="name"
-                    class="w-full md:w-64"
-                    (onChange)="onFileSelect($event)"
-                  ></p-listbox>
-                </div>
-              </div>
-            </div>
-            <div class="flex justify-between pt-4">
-              <p-button label="Back" (click)="step1Value = 1"></p-button>
-              <p-button label="Kurs hinzufügen" severity="danger" (click)="courseModalVisible = false"></p-button>
-            </div>
-          </ng-template>
-        </p-step-panel>
-      </p-step-panels>
-    </p-stepper>
+    </div>
   </div>
 </p-dialog>
 
@@ -149,7 +91,8 @@
 
 
 <!-- Reference Upload MODAL -->
-<p-dialog header="PDF Hochladen" [(visible)]="referenceModalVisible">
+<p-dialog header="{{ 'modal.pdfUploadHeader' | transloco }}" [(visible)]="referenceModalVisible">
+
   <p-toast/>
   <p-fileUpload
     name="files"
@@ -158,15 +101,15 @@
     [multiple]="true"
     [customUpload]="true"
     [auto]="false"
-    chooseLabel="Dateien auswählen"
-    uploadLabel="Hochladen"
-    cancelLabel="Abbrechen"
+    chooseLabel="{{'actions.choose' | transloco}}"
+    uploadLabel="{{'actions.upload' | transloco}}"
+    cancelLabel="{{'actions.cancel' | transloco}}"
     (uploadHandler)="uploadMultipleFiles($event, selectedRoomPath)">
   </p-fileUpload>
 </p-dialog>
 
 <!-- Invite  MODAL -->
-<p-dialog header="Einladen" [modal]="true" [(visible)]="inviteModalVisible" [style]="{ width: '50rem',height:'50rem' }"
+<p-dialog header="{{ 'modal.inviteHeader' | transloco }}" [modal]="true" [(visible)]="inviteModalVisible" [style]="{ width: '50rem',height:'50rem' }"
           [closable]="true" [dismissableMask]="true">
 
 
@@ -177,9 +120,9 @@
           <th style="width: 4rem">
             <p-tableHeaderCheckbox/>
           </th>
-          <th>Name</th>
-          <th>Nachname</th>
-          <th>Email</th>
+          <th>{{ 'settings.fname' |transloco }}</th>
+          <th>{{ 'settings.lname' |transloco }}</th>
+          <th>{{ 'settings.mail' |transloco }}</th>
         </tr>
       </ng-template>
       <ng-template #body let-user>
@@ -197,7 +140,7 @@
 
 
   <div class="flex justify-end gap-2 mt-4 !pt-3">
-    <p-button label="Abbrechen" class="p-button-text" (click)="inviteModalVisible = false"></p-button>
-    <p-button label="User hinzufügen" (click)="addUsersToRoom()" severity="danger"></p-button>
+    <p-button label="{{ 'actions.cancel' | transloco }}" (click)="inviteModalVisible = false"></p-button>
+    <p-button label="{{ 'actions.addUser' | transloco }}" (click)="addUsersToRoom()" severity="danger"></p-button>
   </div>
 </p-dialog>
