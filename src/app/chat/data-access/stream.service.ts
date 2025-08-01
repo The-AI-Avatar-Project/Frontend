@@ -51,6 +51,20 @@ export class VideoChatService {
     }
   }
 
+  stopStream(): void {
+    this._isStreaming.set(false);
+
+    if (this.hls) {
+      this.hls.destroy();
+      this.hls = null;
+    }
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
+    }
+    this._playlistUrl.set(null);
+  }
+
   async startStream(
     userText: string,
     roomPath: string,

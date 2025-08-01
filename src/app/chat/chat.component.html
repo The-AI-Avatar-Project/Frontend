@@ -7,7 +7,11 @@
     {{ "chat.hello" | transloco }}, {{ this.firstName() | titlecase }}!
   </h2>
   <div class="chat-main">
-    <app-avatar class="chat-avatar" [posterImage]="posterImage()" />
+    <app-avatar
+      class="chat-avatar"
+      (onStopVideoClick)="onStopVideoClick()"
+      [posterImage]="posterImage()"
+    />
     <app-chat-window
       class="chat-window"
       [chatLog]="chatLog()"

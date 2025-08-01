@@ -8,7 +8,9 @@
     "page": "S.",
     "initalMessage": "Hallo, wie kann ich Ihnen helfen?",
     "return": "Zurück",
-    "hello": "Hallo"
+    "hello": "Hallo",
+    "ai-watermark": "KI Generiert",
+    "stopVideo": "Video stoppen"
   },
   "footer": {
     "text": "Diese Anwendung nutzt künstliche Intelligenz (KI), um Anfragen automatisch zu beantworten und Videos zu erstellen."

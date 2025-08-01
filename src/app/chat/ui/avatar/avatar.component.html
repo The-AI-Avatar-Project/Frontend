@@ -9,5 +9,8 @@
     playsInline
     [poster]="posterImage()"
   ></video>
-  <span class="avatar-watermark">AI Generated</span>
+  <p-button class="avatar-stop-button" (click)="onStopButtonClick()">{{
+    "chat.stopVideo" | transloco
+  }}</p-button>
+  <span class="avatar-watermark">{{ "chat.ai-watermark" | transloco }}</span>
 </div>

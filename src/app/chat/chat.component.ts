@@ -1,9 +1,4 @@
-import {
-  Component,
-  inject,
-  signal,
-  ViewChild,
-} from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
 import { ChatWindowComponent } from './ui/chat-window/chat-window.component';
 import { AvatarComponent } from './ui/avatar/avatar.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -106,5 +101,9 @@ export class ChatComponent {
     } catch (err) {
       console.error('Error while stopping the recording:', err);
     }
+  }
+
+  onStopVideoClick() {
+    this.streamService.stopStream();
   }
 }
