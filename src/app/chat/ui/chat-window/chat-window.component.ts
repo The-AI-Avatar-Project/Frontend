@@ -20,13 +20,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { PdfDownloadService } from '../../data-access/pdf-download.service';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { environment } from '../../../environments/environment';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-chat-window',
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.scss'],
   standalone: true,
-  imports: [MatIconModule, NgClass, FormsModule, TranslocoPipe],
+  imports: [MatIconModule, NgClass, FormsModule, TranslocoPipe, MarkdownModule],
 })
 export class ChatWindowComponent {
   chatLog = input<ChatMessageDTO[]>([]);
