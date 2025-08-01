@@ -9,7 +9,7 @@
           : 'chat-window-bot-message'
       "
     >
-      {{ message.message }}
+      <markdown clipboard [data]="message.message"></markdown>
       @if(message.sender === Sender.Bot && message.references.length > 0){
       <br />
       <br />
