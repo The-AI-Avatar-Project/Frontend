@@ -1,6 +1,5 @@
 import {
   Component,
-  ElementRef,
   inject,
   signal,
   ViewChild,
@@ -48,13 +47,11 @@ export class ChatComponent {
   error = this.streamService.error;
   chatLog = this.streamService.messages;
 
-  posterImage = signal<string>('dummyprof1.png');
+  posterImage = signal<string>('placeholderProf.png');
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
-      // Wird bei jedem Param-Wechsel aufgerufen!
       this.streamService.reset();
-      // Optional: weitere Logik, z.B. Chat laden
     });
     this.authService.getFirstName().then((n) => this.firstName.set(n));
     this.route.paramMap.subscribe((params) => {
