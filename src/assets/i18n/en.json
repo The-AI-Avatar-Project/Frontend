@@ -8,7 +8,9 @@
     "page": "p.",
     "initalMessage": "Hey, how can I help you?",
     "return": "Return",
-    "hello": "Hello"
+    "hello": "Hello",
+    "ai-watermark": "AI Generated",
+    "stopVideo": "Stop Video"
   },
   "footer": {
     "text": "This application uses artificial intelligence (AI) to automatically answer inquiries and generate videos."

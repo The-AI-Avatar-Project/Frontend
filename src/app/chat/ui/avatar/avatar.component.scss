@@ -1,6 +1,6 @@
 .avatar {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   position: relative;
 }
 .avatar-video {
@@ -10,4 +10,9 @@
   position: absolute;
   top: 0;
   left: 7px;
+}
+
+.avatar-stop-button{
+  margin-top: 10px;
+  margin-left: 2px;
 }
