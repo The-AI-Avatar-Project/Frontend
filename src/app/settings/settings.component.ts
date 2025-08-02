@@ -1,24 +1,25 @@
-import { Component, effect, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { TableModule } from 'primeng/table';
-import { Course, newCourse } from '../shared/interfaces/courses';
-import { NgForOf, NgIf } from '@angular/common';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Dialog } from 'primeng/dialog';
-import { FileUploadModule } from 'primeng/fileupload';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { UserService } from '../shared/services/user.service';
-import { User } from '../shared/interfaces/user';
-import { CourseService } from '../courses/data-access/course.service';
-import { RoomService } from '../shared/services/room.service';
-import { AuthService } from '../auth/auth.service';
-import { Select } from 'primeng/select';
-import { MessageService } from 'primeng/api';
-import { Toast } from 'primeng/toast';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { lastValueFrom } from 'rxjs';
-import { iconNames } from './data-access/icons';
+import {Component, effect, inject, signal} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {TableModule} from 'primeng/table';
+import {Course, newCourse} from '../shared/interfaces/courses';
+import {NgForOf, NgIf} from '@angular/common';
+import {Button} from 'primeng/button';
+import {InputText} from 'primeng/inputtext';
+import {Dialog} from 'primeng/dialog';
+import {FileUploadModule} from 'primeng/fileupload';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {UserService} from '../shared/services/user.service';
+import {User} from '../shared/interfaces/user';
+import {CourseService} from '../courses/data-access/course.service';
+import {RoomService} from '../shared/services/room.service';
+import {AuthService} from '../auth/auth.service';
+import {Select} from 'primeng/select';
+import {MessageService} from 'primeng/api';
+import {Toast} from 'primeng/toast';
+import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {async, lastValueFrom} from 'rxjs';
+import {iconNames} from './data-access/icons';
+import {jwtDecode} from 'jwt-decode';
 
 interface Column {
   field: string;
@@ -71,8 +72,8 @@ export class SettingsComponent {
   step2Value = 2;
 
   selectedCourse: newCourse | null = null;
-  newCourse: newCourse = { name: '' };
-  editedCourse: newCourse = { name: '' };
+  newCourse: newCourse = {name: ''};
+  editedCourse: newCourse = {name: ''};
 
   users!: User[];
   selectedUser: User[] = [];
@@ -83,12 +84,29 @@ export class SettingsComponent {
   filteredCourses!: Course[];
   selectedRoomId: string = '';
 
+  translateItems() {
+
+
+    this.translocoService.selectTranslate('settings.lecture').subscribe(translated => {
+      this.cols = [
+        {field: 'name', header: translated}
+      ];
+    });
+  }
+
   async ngOnInit() {
+
+this.auth.getRole()
+
     await lastValueFrom(
       this.translocoService.load(this.translocoService.getActiveLang())
     );
 
     const userId = this.auth.getUserId();
+
+    this.translocoService.langChanges$.subscribe(() => {
+      this.translateItems()
+    })
 
     this.roomService.getAllRooms().subscribe((rooms) => {
       this.filteredCourses = rooms.filter(
@@ -122,7 +140,7 @@ export class SettingsComponent {
   }
 
   openEditModal(course: newCourse) {
-    this.editedCourse = { ...course };
+    this.editedCourse = {...course};
     this.editModalVisible = true;
   }
 
