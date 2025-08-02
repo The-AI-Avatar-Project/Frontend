@@ -10,17 +10,17 @@
   border-radius: 15px;
   overflow-x: auto;
   scrollbar-width: thin;
-  scrollbar-color: #d1d5db transparent; 
+  scrollbar-color: #d1d5db transparent;
 }
 
 
 .semester-filter::-webkit-scrollbar {
-  height: 4px; 
+  height: 4px;
   background: transparent;
 }
 
 .semester-filter::-webkit-scrollbar-thumb {
-  background: #d1d5db; 
+  background: #d1d5db;
   border-radius: 2px;
 }
 
@@ -29,7 +29,8 @@
 }
 
 .semester-button{
-  width: 90px;
+  width: fit-content;
+  padding: 0 1rem;
   font-size: 16px;
   height: 35px;
   border: none;
