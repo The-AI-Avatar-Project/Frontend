@@ -9,12 +9,12 @@ import { Professor } from '../../../shared/interfaces/courses';
   styleUrl: './courses-item.component.scss',
 })
 export class CoursesItemComponent {
-  professor = input.required<Professor>()
+  professor = input.required<Professor>();
   selectedSemester = input<string>();
-formatSemester(semester: string | undefined | null): string {
-  if (!semester || semester.length < 5) {
-    return ''; 
+  formatSemester(semester: string | undefined | null): string {
+    if (!semester || semester.length < 5) {
+      return '';
+    }
+    return semester.slice(0, 4) + '_' + semester.slice(4);
   }
-  return semester.slice(0, 4) + '_' + semester.slice(4);
-}
 }

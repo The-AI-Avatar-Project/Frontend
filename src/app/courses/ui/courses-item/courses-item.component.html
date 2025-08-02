@@ -5,17 +5,20 @@
   </div>
   <ul class="courses-list">
     @for(course of professor().courses; track course){
-    <a class="courses-course"   [routerLink]="[
-    '/chat',
-    [
-      formatSemester(selectedSemester()),
-      professor()?.name ?? 'unkown',
-      course?.name ?? 'unkown'
-    ].join('_')
-  ]">
+    <a
+      class="courses-course"
+      [routerLink]="[
+        '/chat',
+        [
+          formatSemester(selectedSemester()),
+          professor()?.name ?? 'unkown',
+          course?.name ?? 'unkown'
+        ].join('_')
+      ]"
+    >
       <img
         class="course-image"
-        src="course_icon_{{course.name }}.png"
+        src="icons/{{ course.image }}"
         [alt]="course.name"
       />
       <p class="course-name">
