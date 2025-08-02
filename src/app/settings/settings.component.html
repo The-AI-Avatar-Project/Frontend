@@ -1,3 +1,4 @@
+<p-toast />
 <div class="flex gap-2 mt-4 justify-start !mt-2">
   <p-button
     label="{{ 'settings.addCourses' | transloco }}"
@@ -44,8 +45,10 @@
   header="{{ 'settings.addCourses' | transloco }}"
   [(visible)]="courseModalVisible"
   [modal]="true"
-  [style]="{ width: '50vw', height: '100vh' }"
+  [style]="{ width: '500px', height: '400px' }"
   [dismissableMask]="true"
+  [draggable]="false"
+  [closable]="true"
 >
   <div class="card flex justify-center">
     <div class="flex flex-col gap-4">
@@ -117,8 +120,7 @@
       </div>
       <p-button
         label="{{ 'settings.addCourses' | transloco }}"
-        (onClick)="
-          roomService.createGroup(
+        (onClick)="createGroup(
             newCourse.name,
             newCourse.year,
             newCourse.semester,
@@ -136,8 +138,11 @@
 <p-dialog
   header="{{ 'modal.pdfUploadHeader' | transloco }}"
   [(visible)]="referenceModalVisible"
+  [modal]="true"
+  [draggable]="false"
+  [dismissableMask]="true"
 >
-  <p-toast />
+
   <p-fileUpload
     name="files"
     mode="advanced"
@@ -145,6 +150,7 @@
     [multiple]="true"
     [customUpload]="true"
     [auto]="false"
+
     chooseLabel="{{ 'actions.choose' | transloco }}"
     uploadLabel="{{ 'actions.upload' | transloco }}"
     cancelLabel="{{ 'actions.cancel' | transloco }}"
@@ -161,6 +167,7 @@
   [style]="{ width: '50rem', height: '50rem' }"
   [closable]="true"
   [dismissableMask]="true"
+  [draggable]="false"
 >
   <div class="card">
     <p-table

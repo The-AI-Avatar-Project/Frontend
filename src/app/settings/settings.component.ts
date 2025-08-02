@@ -62,10 +62,7 @@ export class SettingsComponent {
   cols: Column[] = [];
 
   referenceModalVisible = false;
-  editModalVisible = false;
-  deleteModalVisible = false;
   inviteModalVisible = false;
-
   courseModalVisible = false;
 
   step1Value = 1;
@@ -85,8 +82,6 @@ export class SettingsComponent {
   selectedRoomId: string = '';
 
   translateItems() {
-
-
     this.translocoService.selectTranslate('settings.lecture').subscribe(translated => {
       this.cols = [
         {field: 'name', header: translated}
@@ -95,8 +90,7 @@ export class SettingsComponent {
   }
 
   async ngOnInit() {
-
-this.auth.getRole()
+    this.auth.getRole()
 
     await lastValueFrom(
       this.translocoService.load(this.translocoService.getActiveLang())
@@ -119,9 +113,14 @@ this.auth.getRole()
     const groupID = this.selectedRoomId;
     const userIDs: any = this.selectedUser.map((user) => user.id);
 
-    this.roomService.addUsersToGroup(groupID, userIDs).subscribe({
-      next: () => console.log('Users added!'),
-      error: (err) => console.error('Error:', err),
+    this.roomService.addUsersToGroup(groupID, userIDs).subscribe(response => {
+      if (response.ok) {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'User zum Raum hinzugefügt',
+          detail: '',
+        })
+      }
     });
     this.selectedUser = [];
     this.inviteModalVisible = false;
@@ -139,11 +138,6 @@ this.auth.getRole()
     this.selectedRoomPath = course.path;
   }
 
-  openEditModal(course: newCourse) {
-    this.editedCourse = {...course};
-    this.editModalVisible = true;
-  }
-
   openInviteModal(course: any) {
     this.inviteModalVisible = true;
     this.selectedRoomId = course.id;
@@ -151,7 +145,6 @@ this.auth.getRole()
     this.userService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
-        console.log('Antwort von /users:', this.users);
       },
       error: (err) => {
         console.error('Fehler beim Laden der Benutzer:', err);
@@ -177,19 +170,6 @@ this.auth.getRole()
   files = signal<FileEntry[]>([]);
   selectedFile!: FileEntry;
 
-  onMockUpload(event: any, uploader: any) {
-    for (let file of event.files) {
-      const entry: FileEntry = {
-        name: file.name,
-        code: file.name.replace(/\W/g, '').toUpperCase().slice(0, 6),
-      };
-
-      this.files.update((list) => [...list, entry]);
-      this.fileBlobMap.set(file.name, file); // Datei speichern
-    }
-
-    uploader.clear();
-  }
 
   downloadFile(fileName: string) {
     const file = this.fileBlobMap.get(fileName);
@@ -203,42 +183,50 @@ this.auth.getRole()
     URL.revokeObjectURL(blobUrl);
   }
 
-  onFileSelect(event: any) {
-    const selected: FileEntry = event.value;
-    if (selected) {
-      this.downloadFile(selected.name);
-    }
-  }
-
-  selectedUploadFile!: File;
 
   uploadMultipleFiles(event: any, roomPath: string) {
-    const formData = new FormData();
     const files: File[] = event.files;
 
     for (const file of files) {
-      formData.append('file', file); // append each file individually
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('roomPath', roomPath);
+
+      fetch('http://localhost:8080/references/upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${this.auth.getToken()}`
+          // Note: Don't set 'Content-Type' manually with FormData
+        }
+      }).then(response => {
+        if (response.ok) {
+          this.messageService.add({
+            severity: 'success',
+            summary: `Datei ${file.name} erfolgreich hochgeladen`,
+            detail: ''
+          });
+          this.referenceModalVisible = false;
+        } else {
+          console.error(`Upload fehlgeschlagen für ${file.name}:`, response.status);
+        }
+      }).catch(error => {
+        console.error(`Fehler beim Hochladen von ${file.name}:`, error);
+      });
     }
+  }
 
-    formData.append('roomPath', roomPath);
-
-    fetch('http://localhost:8080/references/upload', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${this.auth.getToken()}`,
-      },
-    }).then((response) => {
+  createGroup(name: any, year: any, semester: any, selectedIcon: string) {
+    this.roomService.createGroup(name, year, semester, selectedIcon).then(response => {
       if (response.ok) {
         this.messageService.add({
-          severity: 'info',
-          summary: 'Upload erfolgreich',
+          severity: 'success',
+          summary: 'Raum erfolgreich erstellt',
           detail: '',
-        });
-        console.log('Alle Dateien erfolgreich hochgeladen');
-      } else {
-        console.error('Upload fehlgeschlagen:', response.status);
+        })
+        this.courseModalVisible = false;
       }
-    });
+    })
+    this.courseModalVisible = false;
   }
 }
