@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import Keycloak from 'keycloak-js';
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
+import {jwtDecode} from 'jwt-decode';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class AuthService {
   private keycloak: Keycloak.KeycloakInstance;
 
@@ -31,6 +32,19 @@ export class AuthService {
 
   getToken(): string | undefined {
     return this.keycloak.token;
+  }
+
+  getRole() {
+    const realmAccess: any = this.keycloak.realmAccess?.roles
+    let role = "";
+    if (realmAccess.includes("student")) {
+      role = "student"
+    } else if (realmAccess.includes("roomowner")) {
+      role = "roomowner"
+    }
+
+    return role;
+
   }
 
   isLoggedIn(): boolean {
