@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from '../../auth/auth.service';
 import {lastValueFrom, Observable} from 'rxjs';
 import {MessageService} from 'primeng/api';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,16 +15,13 @@ export class RoomService {
   protected messageService: MessageService = inject(MessageService);
 
   getAllRooms() {
-    return this.http.get<any[]>('http://localhost:8080/rooms');
+    return this.http.get<any[]>(`${environment.apiUrl}/rooms`);
   }
-
-  private readonly apiUrl = 'http://localhost:8080/users';
-
 
   addUsersToGroup(groupId: string, userIds: string[]): Observable<any> {
     const bearertoken = this.auth.getToken();
 
-    const payload = {
+    const body = {
       userIds: userIds,
       groupId: groupId
     };
@@ -33,37 +31,23 @@ export class RoomService {
       "Content-Type": "application/json"
     });
 
-    return this.http.post<any>(this.apiUrl, payload, {headers, observe: 'response'});
+    return this.http.post<any[]>(`${environment.apiUrl}/users`, body, {headers, observe: 'response'});
+
   }
 
 
-  async createGroup(name: string, year: number, semester: string, icon: string): Promise<any> {
+   createGroup(name: string, year: number, semester: string, icon: string): Observable<any> {
     const apiUrl = `http://localhost:8080/rooms`;
-    const bearertoken = this.auth.getToken();
+    const token = this.auth.getToken();
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${bearertoken}`,
-      "Content-Type": "application/json"
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     });
-    const body = {
-      name: name,
-      year: year,
-      semester: semester,
-      icon: icon
-    };
-    try {
-      return await lastValueFrom(
-        this.http.post(apiUrl, body, {headers})
-      ).then((response) =>
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Raum erfolgreich erstellt',
-          detail: '',
-        })
-      )
-    } catch (err) {
-      console.error("Fehler beim Erstellen des Raums:", err);
-      throw err;
-    }
+
+    const body = { name, year, semester, icon };
+
+     return this.http.post<any[]>(`${environment.apiUrl}/rooms`, body, {headers, observe: 'response'});
+
   }
 
 

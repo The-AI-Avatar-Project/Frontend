@@ -1,4 +1,4 @@
-import {Component, effect, inject, signal} from '@angular/core';
+import {ChangeDetectorRef, Component, computed, effect, inject, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TableModule} from 'primeng/table';
 import {Course, newCourse} from '../shared/interfaces/courses';
@@ -17,9 +17,9 @@ import {Select} from 'primeng/select';
 import {MessageService} from 'primeng/api';
 import {Toast} from 'primeng/toast';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {async, lastValueFrom} from 'rxjs';
+import {lastValueFrom} from 'rxjs';
 import {iconNames} from './data-access/icons';
-import {jwtDecode} from 'jwt-decode';
+import {Router} from '@angular/router';
 
 interface Column {
   field: string;
@@ -58,6 +58,7 @@ export class SettingsComponent {
   protected auth: AuthService = inject(AuthService);
   protected messageService: MessageService = inject(MessageService);
   protected translocoService = inject(TranslocoService);
+  protected router = inject(Router);
 
   cols: Column[] = [];
 
@@ -66,28 +67,21 @@ export class SettingsComponent {
   courseModalVisible = false;
 
   step1Value = 1;
-  step2Value = 2;
 
-  selectedCourse: newCourse | null = null;
   newCourse: newCourse = {name: ''};
-  editedCourse: newCourse = {name: ''};
 
   users!: User[];
   selectedUser: User[] = [];
+  userID = this.auth.getUserId();
 
   icons: string[] = iconNames;
   selectedIcon: string = '';
 
-  filteredCourses!: Course[];
+  filteredCourses = signal<Course[]>([]);
+
+
   selectedRoomId: string = '';
 
-  translateItems() {
-    this.translocoService.selectTranslate('settings.lecture').subscribe(translated => {
-      this.cols = [
-        {field: 'name', header: translated}
-      ];
-    });
-  }
 
   async ngOnInit() {
     this.auth.getRole()
@@ -96,16 +90,34 @@ export class SettingsComponent {
       this.translocoService.load(this.translocoService.getActiveLang())
     );
 
-    const userId = this.auth.getUserId();
-
     this.translocoService.langChanges$.subscribe(() => {
       this.translateItems()
     })
 
+    this.loadRooms();
+
+  }
+
+  private cdr = inject(ChangeDetectorRef);
+
+  loadRooms() {
     this.roomService.getAllRooms().subscribe((rooms) => {
-      this.filteredCourses = rooms.filter(
-        (room: any) => room.attributes?.owner?.[0] === userId
+      console.log(rooms)
+      const userID = this.auth.getUserId();
+      this.filteredCourses.set(
+        rooms.filter((room: any) => room.attributes?.owner?.[0] === userID)
       );
+      console.log(this.filteredCourses());
+      this.cdr.detectChanges(); // 👈 force Angular to re-check
+    });
+  }
+
+
+  translateItems() {
+    this.translocoService.selectTranslate('settings.lecture').subscribe(translated => {
+      this.cols = [
+        {field: 'name', header: translated}
+      ];
     });
   }
 
@@ -158,14 +170,6 @@ export class SettingsComponent {
   // Speichert die echten File-Objekte mit Dateiname als Schlüssel
   fileBlobMap = new Map<string, File>();
 
-  constructor() {
-    // Effekt: Wenn sich selectedFile ändert → Datei downloaden
-    effect(() => {
-      if (this.selectedFile) {
-        this.downloadFile(this.selectedFile.name);
-      }
-    });
-  }
 
   files = signal<FileEntry[]>([]);
   selectedFile!: FileEntry;
@@ -217,16 +221,28 @@ export class SettingsComponent {
   }
 
   createGroup(name: any, year: any, semester: any, selectedIcon: string) {
-    this.roomService.createGroup(name, year, semester, selectedIcon).then(response => {
+
+
+    this.roomService.createGroup(name, year, semester, selectedIcon).subscribe(response => {
       if (response.ok) {
         this.messageService.add({
           severity: 'success',
           summary: 'Raum erfolgreich erstellt',
           detail: '',
-        })
+        });
         this.courseModalVisible = false;
+        this.loadRooms();
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Diese Aktion ist Fehlgeschlagen',
+          detail: '',
+        });
       }
+
     })
-    this.courseModalVisible = false;
+
+
   }
+
 }

@@ -10,7 +10,7 @@
 <div class="card !pt-5">
   <p-table
     [columns]="cols"
-    [value]="filteredCourses"
+    [value]="filteredCourses()"
     [tableStyle]="{ 'min-width': '50rem' }"
     [paginator]="true"
     [rows]="10"
