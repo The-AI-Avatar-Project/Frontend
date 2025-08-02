@@ -53,6 +53,7 @@ export class NavbarComponent {
   userDropdownItems: MenuItem[] | undefined;
 
   username: string | undefined;
+  role: string | undefined;
 
   //Change Language
   stateOptions: any[] = [
@@ -63,10 +64,10 @@ export class NavbarComponent {
   value: string = this.translocoService.getActiveLang();
 
 
-
   ngOnInit(): void {
     this.auth.getFirstName().then((value) => (this.username = value));
-      this.items = [
+    this.role = this.auth.getRole();
+    this.items = [
       {
         label: "navbar.courses",
         icon: 'pi pi-search',
@@ -76,19 +77,29 @@ export class NavbarComponent {
 
     // QUICK FIX FOR PRIMENG DROPDOWN TRANSLOCO SOLUTION (anders gehts nicht)
     this.translocoService.selectTranslateObject([
-      'settings.lecture',
+      'navbar.options',
       'navbar.settings',
       'navbar.avatar',
       'navbar.logOut'
-    ]).subscribe(([settingsLecture, navbarSettings, navbarAvatar, navbarLogOut]) => {
-      this.userDropdownItems = [{
-        label: settingsLecture,
-        items: [
-          { label: navbarSettings, icon: 'pi pi-cog', command: () => this.routingService.settings() },
-          { label: navbarAvatar, icon: 'pi pi-user', command: () => this.routingService.avatar() },
-          { label: navbarLogOut, icon: 'pi pi-sign-out', command: () => this.auth.logout() },
-        ],
-      }];
+    ]).subscribe(([navbarOptions,navbarSettings, navbarAvatar, navbarLogOut]) => {
+      if (this.role === 'roomowner') {
+        this.userDropdownItems = [{
+          label: navbarOptions,
+          items: [
+            {label: navbarSettings, icon: 'pi pi-cog', command: () => this.routingService.settings()},
+            {label: navbarAvatar, icon: 'pi pi-user', command: () => this.routingService.avatar()},
+            {label: navbarLogOut, icon: 'pi pi-sign-out', command: () => this.auth.logout()},
+          ],
+        }];
+      } else {
+        this.userDropdownItems = [{
+          label: navbarOptions,
+          items: [
+            {label: navbarLogOut, icon: 'pi pi-sign-out', command: () => this.auth.logout()},
+          ],
+        }];
+      }
+
     });
 
 
