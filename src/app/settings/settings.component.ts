@@ -77,6 +77,10 @@ export class SettingsComponent {
   icons: string[] = iconNames;
   selectedIcon: string = '';
 
+  semesters = [
+    { label: 'Sommersemester', value: 'SoSe' },
+    { label: 'Wintersemester', value: 'WiSe' }
+  ];
   filteredCourses = signal<Course[]>([]);
 
 
@@ -102,12 +106,9 @@ export class SettingsComponent {
 
   loadRooms() {
     this.roomService.getAllRooms().subscribe((rooms) => {
-      console.log(rooms)
-      const userID = this.auth.getUserId();
       this.filteredCourses.set(
-        rooms.filter((room: any) => room.attributes?.owner?.[0] === userID)
+        rooms.filter((room: any) => room.attributes?.owner?.[0] === this.userID)
       );
-      console.log(this.filteredCourses());
       this.cdr.detectChanges(); // 👈 force Angular to re-check
     });
   }
@@ -166,27 +167,11 @@ export class SettingsComponent {
     this.inviteModalVisible = true;
   }
 
-  // UPLOAD FILES AND SHOW THEM
-  // Speichert die echten File-Objekte mit Dateiname als Schlüssel
+
   fileBlobMap = new Map<string, File>();
 
 
   files = signal<FileEntry[]>([]);
-  selectedFile!: FileEntry;
-
-
-  downloadFile(fileName: string) {
-    const file = this.fileBlobMap.get(fileName);
-    if (!file) return;
-
-    const blobUrl = URL.createObjectURL(file);
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = file.name;
-    a.click();
-    URL.revokeObjectURL(blobUrl);
-  }
-
 
   uploadMultipleFiles(event: any, roomPath: string) {
     const files: File[] = event.files;

@@ -75,12 +75,15 @@
 
         <div class="flex flex-col">
           <label for="semester" class="mb-1 font-medium">Semester</label>
-          <input
-            id="semester"
-            type="text"
-            pInputText
+          <p-select
+            [options]="semesters"
             [(ngModel)]="newCourse.semester"
-          />
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Semester auswählen"
+            inputId="semester"
+            class="w-full"
+          ></p-select>
         </div>
 
         <div class="flex flex-col">
