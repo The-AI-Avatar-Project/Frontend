@@ -9,6 +9,8 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {lastValueFrom} from 'rxjs';
 import {AuthService} from '../auth/auth.service';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {MessageService} from 'primeng/api';
+import {Toast} from 'primeng/toast';
 
 @Component({
   selector: 'app-avatar',
@@ -21,7 +23,8 @@ import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
     Stepper,
     NgIf,
     FileUpload,
-    TranslocoPipe
+    TranslocoPipe,
+    Toast
   ],
   templateUrl: './avatar.component.html',
   styleUrl: './avatar.component.scss'
@@ -33,6 +36,7 @@ export class AvatarComponent {
   protected auth = inject(AuthService);
   protected http: HttpClient = inject(HttpClient);
   protected translocoService = inject(TranslocoService)
+  protected messageService = inject(MessageService)
 
   //File BASE64
   imageURL: string | ArrayBuffer | null = null;
@@ -45,16 +49,6 @@ export class AvatarComponent {
 
   step1Value = 1;
   step2Value = 2;
-
-  openAvatarModal() {
-    this.step2Value = 1;
-    this.avatarModalVisible = true;
-  }
-
-
-  showImage() {
-    console.log("Image:", this.imageURL);
-  }
 
 
   // Fired before upload, when a file is selected
@@ -126,7 +120,6 @@ export class AvatarComponent {
       const apiUrl = `http://localhost:8080/avatar/create`;
       const bearertoken = this.auth.getToken();
 
-
       // Create FormData and append blobs
       const formData = new FormData();
       formData.append('face_image', this.imageBlob!, 'face_image.jpeg');
@@ -134,18 +127,32 @@ export class AvatarComponent {
 
       const headers = new HttpHeaders({
         Authorization: `Bearer ${bearertoken}`
-        // Do NOT set 'Content-Type' header, browser sets it automatically for multipart/form-data
+        // Do NOT set 'Content-Type', browser sets it for multipart/form-data
       });
 
       const response = await lastValueFrom(
         this.http.post(apiUrl, formData, { headers })
       );
 
-      console.log('Avatar Created:', response);
+      // ✅ Show PrimeNG success toast
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Avatar created successfully!'
+      });
+
       return response;
 
     } catch (err) {
       console.error('Fehler beim Erstellen des Avatars:', err);
+
+      // Optional: show error toast
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Fehler beim Erstellen des Avatars.'
+      });
+
       throw err;
     }
   }
