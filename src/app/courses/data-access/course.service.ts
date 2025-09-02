@@ -24,7 +24,7 @@ export class CourseService {
 
   semesterList = computed(() =>
     Array.from(
-      new Set(this.semesters().map((s) => s.year +" "+ s.semesterType))
+      new Set(this.semesters().map((s) => s.year + s.semesterType))
     ).sort((a, b) => b.localeCompare(a))
   );
 

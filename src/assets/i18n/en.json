@@ -23,7 +23,8 @@
     "createAvatar": "Create your Avatar",
     "next": "Next",
     "back": "Back",
-    "browse": "Browse"
+    "browse": "Browse",
+    "imageWrongSize": "The width and height of the image must be even numbers."
   },
   "settings": {
     "addCourses": "Add Course",

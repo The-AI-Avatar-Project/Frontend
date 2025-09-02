@@ -23,7 +23,8 @@
     "createAvatar": "Erstelle deinen Avatar",
     "next": "Weiter",
     "back": "Zurück",
-    "browse": "Hochladen"
+    "browse": "Hochladen",
+    "imageWrongSize": "Die Breite und Höhe des Bildes müssen jeweils eine gerade Zahl sein."
   },
   "settings": {
     "addCourses": "Kurs hinzufügen",
