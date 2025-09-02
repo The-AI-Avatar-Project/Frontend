@@ -1,29 +1,64 @@
 // audio.service.ts
 import { Injectable } from '@angular/core';
 
-
 @Injectable({ providedIn: 'root' })
 export class AudioService {
+  private readonly TARGET_SAMPLE_RATE = 24000;
 
   async convertToWav(blob: Blob): Promise<Blob> {
     const arrayBuffer = await blob.arrayBuffer();
 
+    // 1. Decode original audio
     const audioCtx = new AudioContext();
     const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-    const wavBuffer = this.audioBufferToWav(audioBuffer);
+    // 2. Resample to 24kHz
+    const resampledBuffer = await this.resampleAudioBuffer(
+      audioBuffer,
+      this.TARGET_SAMPLE_RATE
+    );
+
+    // 3. Encode to WAV
+    const wavBuffer = this.audioBufferToWav(resampledBuffer);
 
     return new Blob([wavBuffer], { type: 'audio/wav' });
   }
 
+  private async resampleAudioBuffer(
+    buffer: AudioBuffer,
+    targetSampleRate: number
+  ): Promise<AudioBuffer> {
+    if (buffer.sampleRate === targetSampleRate) {
+      return buffer; // nichts zu tun
+    }
+
+    const numOfChannels = buffer.numberOfChannels;
+    const newLength = Math.round(
+      (buffer.length * targetSampleRate) / buffer.sampleRate
+    );
+
+    const offlineCtx = new OfflineAudioContext(
+      numOfChannels,
+      newLength,
+      targetSampleRate
+    );
+
+    const source = offlineCtx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(offlineCtx.destination);
+    source.start(0);
+
+    return await offlineCtx.startRendering();
+  }
+
   private audioBufferToWav(buffer: AudioBuffer): ArrayBuffer {
     const numOfChannels = buffer.numberOfChannels;
-    const sampleRate = buffer.sampleRate;
+    const sampleRate = buffer.sampleRate; // jetzt garantiert 24kHz
     const format = 1; // PCM
     const bitDepth = 16;
 
     const samples = buffer.length;
-    const blockAlign = numOfChannels * bitDepth / 8;
+    const blockAlign = (numOfChannels * bitDepth) / 8;
     const byteRate = sampleRate * blockAlign;
     const dataSize = samples * blockAlign;
 
@@ -57,7 +92,7 @@ export class AudioService {
         const sample = buffer.getChannelData(channel)[i];
         // Clamp and scale
         const s = Math.max(-1, Math.min(1, sample));
-        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
         offset += 2;
       }
     }
@@ -75,8 +110,6 @@ export class AudioService {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        // Ergebnis ist Data-URL: z.B. "data:audio/wav;base64,AAA..."
-        // Wir schneiden das "data:..." weg, falls nur reines Base64 erwartet wird
         const result = reader.result as string;
         const base64 = result.split(',')[1];
         resolve(base64);
@@ -85,5 +118,4 @@ export class AudioService {
       reader.readAsDataURL(blob);
     });
   }
-
 }
