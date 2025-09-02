@@ -1,16 +1,23 @@
-import {Component, inject, signal} from '@angular/core';
-import {Button} from 'primeng/button';
-import {Step, StepList, StepPanel, StepPanels, Stepper} from 'primeng/stepper';
-import {NgIf} from '@angular/common';
-import {FileUpload} from 'primeng/fileupload';
-import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
-import {AudioService} from '../shared/services/audio.service';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {lastValueFrom} from 'rxjs';
-import {AuthService} from '../auth/auth.service';
-import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {MessageService} from 'primeng/api';
-import {Toast} from 'primeng/toast';
+import { Component, inject, signal } from '@angular/core';
+import { Button } from 'primeng/button';
+import {
+  Step,
+  StepList,
+  StepPanel,
+  StepPanels,
+  Stepper,
+} from 'primeng/stepper';
+import { NgIf } from '@angular/common';
+import { FileUpload } from 'primeng/fileupload';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { AudioService } from '../shared/services/audio.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { lastValueFrom } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-avatar',
@@ -24,10 +31,10 @@ import {Toast} from 'primeng/toast';
     NgIf,
     FileUpload,
     TranslocoPipe,
-    Toast
+    Toast,
   ],
   templateUrl: './avatar.component.html',
-  styleUrl: './avatar.component.scss'
+  styleUrl: './avatar.component.scss',
 })
 export class AvatarComponent {
   //Angular magt keine Blobs in Signals
@@ -35,8 +42,9 @@ export class AvatarComponent {
   protected audioService = inject(AudioService);
   protected auth = inject(AuthService);
   protected http: HttpClient = inject(HttpClient);
-  protected translocoService = inject(TranslocoService)
-  protected messageService = inject(MessageService)
+  protected translocoService = inject(TranslocoService);
+  protected messageService = inject(MessageService);
+  protected router = inject(Router);
 
   //File BASE64
   imageURL: string | ArrayBuffer | null = null;
@@ -50,17 +58,48 @@ export class AvatarComponent {
   step1Value = 1;
   step2Value = 2;
 
-
   // Fired before upload, when a file is selected
   onImageSelect(event: any): void {
-    const file = event.files[0];
-    this.imageBlob = file;  // direkt Blob/File speichern
+    const file: File = event.files[0];
+    if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageURL = reader.result;
+    const objectURL = URL.createObjectURL(file);
+    const img = new Image();
+
+    img.onload = () => {
+      const width = img.naturalWidth;
+      const height = img.naturalHeight;
+
+      console.log('Breite:', width, 'Höhe:', height);
+
+      if (width % 2 !== 0 || height % 2 !== 0) {
+        console.error('Image width and height must be an even number');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: this.translocoService.translate('avatar.imageWrongSize'),
+        });
+      } else {
+        this.imageBlob = file;
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          this.imageURL = reader.result;
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+      // Speicher freigeben
+      URL.revokeObjectURL(objectURL);
     };
-    reader.readAsDataURL(file);
+
+    img.onerror = () => {
+      console.error('Fehler beim Laden des Bildes');
+      URL.revokeObjectURL(objectURL);
+    };
+
+    img.src = objectURL;
   }
 
   onBasicUploadAuto(event: any): void {
@@ -70,19 +109,18 @@ export class AvatarComponent {
 
   /// UPLOAD IMAGE
 
-
   //RECORD AUDIO
 
   private mediaRecorder!: MediaRecorder;
   private audioChunks: Blob[] = [];
 
-  audioUrl = signal<SafeUrl | null>(null)
+  audioUrl = signal<SafeUrl | null>(null);
   isRecording = false;
 
   async startRecording() {
-    this.audioUrl.set(null)
+    this.audioUrl.set(null);
 
-    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     this.mediaRecorder = new MediaRecorder(stream);
     this.audioChunks = [];
 
@@ -93,7 +131,7 @@ export class AvatarComponent {
     };
 
     this.mediaRecorder.onstop = async () => {
-      const audioBlob = new Blob(this.audioChunks, {type: 'audio/webm'});
+      const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
       this.wavBlob = await this.audioService.convertToWav(audioBlob);
 
       const wavUrl = URL.createObjectURL(this.wavBlob);
@@ -104,7 +142,7 @@ export class AvatarComponent {
         this.wavURL = reader.result;
       };
       reader.readAsDataURL(this.wavBlob);
-    }
+    };
 
     this.mediaRecorder.start();
     this.isRecording = true;
@@ -126,7 +164,7 @@ export class AvatarComponent {
       formData.append('voice', this.wavBlob!, 'voice.wav');
 
       const headers = new HttpHeaders({
-        Authorization: `Bearer ${bearertoken}`
+        Authorization: `Bearer ${bearertoken}`,
         // Do NOT set 'Content-Type', browser sets it for multipart/form-data
       });
 
@@ -138,11 +176,12 @@ export class AvatarComponent {
       this.messageService.add({
         severity: 'success',
         summary: 'Success',
-        detail: 'Avatar created successfully!'
+        detail: 'Avatar created successfully!',
       });
 
-      return response;
+      this.router.navigate(['/courses']);
 
+      return response;
     } catch (err) {
       console.error('Fehler beim Erstellen des Avatars:', err);
 
@@ -150,14 +189,12 @@ export class AvatarComponent {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Fehler beim Erstellen des Avatars.'
+        detail: 'Fehler beim Erstellen des Avatars.',
       });
 
       throw err;
     }
   }
-
-
 
   // async createAvatar() {
   //   console.log(this.imageURL);
@@ -190,6 +227,4 @@ export class AvatarComponent {
   //       throw err;
   //     }
   //   }
-
-
 }
