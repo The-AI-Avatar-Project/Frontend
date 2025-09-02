@@ -142,6 +142,7 @@ export class VideoChatService {
         this.hls = new Hls();
         this.hls.loadSource(url);
         this.hls.attachMedia(videoEl);
+        this._isStreaming.set(false);
         this.hls.startLoad();
       } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
         videoEl.src = url;
