@@ -20,7 +20,7 @@ import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {lastValueFrom} from 'rxjs';
 import {iconNames} from './data-access/icons';
 import {Router} from '@angular/router';
-
+import { environment } from '../environments/environment';
 interface Column {
   field: string;
   header: string;
@@ -181,7 +181,7 @@ export class SettingsComponent {
       formData.append('file', file);
       formData.append('roomPath', roomPath);
 
-      fetch('http://localhost:8080/references/upload', {
+      fetch(`${environment.apiUrl}/references/upload`, {
         method: 'POST',
         body: formData,
         headers: {

@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
-  apiUrl: 'http://localhost:8080',
-  keykloakUrl: 'http://localhost:8084',
+  production: false,
+  apiUrl: 'https://app.fb1-ecommerce.hs-rw.de/api',
+  keykloakUrl: 'https://app.fb1-ecommerce.hs-rw.de:8084',
 };

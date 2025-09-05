@@ -37,7 +37,6 @@ export class RoomService {
 
 
    createGroup(name: string, year: number, semester: string, icon: string): Observable<any> {
-    const apiUrl = `http://localhost:8080/rooms`;
     const token = this.auth.getToken();
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,

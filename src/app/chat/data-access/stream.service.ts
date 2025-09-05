@@ -29,7 +29,7 @@ export class VideoChatService {
   readonly playlistUrl = computed(() => this._playlistUrl());
 
   private hls: Hls | null = null;
-  private ws: WebSocket | null = null;
+  private wss: WebSocket | null = null;
 
   reset(): void {
     this._messages.set([
@@ -45,9 +45,9 @@ export class VideoChatService {
       this.hls.destroy();
       this.hls = null;
     }
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
+    if (this.wss) {
+      this.wss.close();
+      this.wss = null;
     }
   }
 
@@ -58,9 +58,9 @@ export class VideoChatService {
       this.hls.destroy();
       this.hls = null;
     }
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
+    if (this.wss) {
+      this.wss.close();
+      this.wss = null;
     }
     this._playlistUrl.set(null);
   }
@@ -156,21 +156,21 @@ export class VideoChatService {
     }
 
     // 6) WebSocket for updating video
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
+    if (this.wss) {
+      this.wss.close();
+      this.wss = null;
     }
     const HOST_AND_PORT = API_URL.replace(/^https?:\/\//, '');
-    this.ws = new WebSocket(`ws://${HOST_AND_PORT}/ws/${streamingUUID}`);
-    this.ws.onmessage = (ev) => {
+    this.wss = new WebSocket(`wss://${HOST_AND_PORT}/ws/${streamingUUID}`);
+    this.wss.onmessage = (ev) => {
       if (ev.data === 'update' && this.hls) {
         this.hls.startLoad();
         this.hls.startLoad(-1);
         this._isStreaming.set(false);
       }
     };
-    this.ws.onerror = () => this._error.set('Websocket Error');
-    this.ws.onclose = () => {
+    this.wss.onerror = () => this._error.set('Websocket Error');
+    this.wss.onclose = () => {
       this._isStreaming.set(false);
       console.log('stopped streaming');
     };
@@ -262,21 +262,21 @@ export class VideoChatService {
     }
 
     // 6) WebSocket for updating video
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
+    if (this.wss) {
+      this.wss.close();
+      this.wss = null;
     }
     const HOST_AND_PORT = API_URL.replace(/^https?:\/\//, '');
-    this.ws = new WebSocket(`ws://${HOST_AND_PORT}/ws/${streamingUUID}`);
-    this.ws.onmessage = (ev) => {
+    this.wss = new WebSocket(`wss://${HOST_AND_PORT}/ws/${streamingUUID}`);
+    this.wss.onmessage = (ev) => {
       if (ev.data === 'update' && this.hls) {
         this.hls.startLoad();
         this.hls.startLoad(-1);
         this._isStreaming.set(false);
       }
     };
-    this.ws.onerror = () => this._error.set('Websocket Error');
-    this.ws.onclose = () => {
+    this.wss.onerror = () => this._error.set('Websocket Error');
+    this.wss.onclose = () => {
       this._isStreaming.set(false);
       console.log('stopped streaming');
     };

@@ -18,6 +18,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-avatar',
@@ -155,7 +156,7 @@ export class AvatarComponent {
 
   async createAvatar() {
     try {
-      const apiUrl = `http://localhost:8080/avatar/create`;
+      const apiUrl = `${environment.apiUrl}/avatar/create`;
       const bearertoken = this.auth.getToken();
 
       // Create FormData and append blobs
